@@ -1,45 +1,70 @@
 import Link from "next/link";
-import { Mail01, MarkerPin01, Phone } from "@untitledui/icons";
 import { site } from "@/lib/config";
 import { Logo } from "./logo";
 
+const columns = [
+  {
+    title: "Pharmacy",
+    links: [
+      ["Browse medicines", "/drugs"],
+      ["Send a prescription", "/request"],
+      ["Ask a pharmacist", "/consult"],
+      ["How it works", "/#how-it-works"],
+    ],
+  },
+  {
+    title: "Your account",
+    links: [
+      ["My requests", "/account"],
+      ["My consultations", "/account?tab=consultations"],
+      ["Create an account", "/signup"],
+      ["Staff sign in", "/admin/login"],
+    ],
+  },
+];
+
 export function SiteFooter() {
   return (
-    <footer className="mt-auto border-t border-gray-200 bg-gray-50">
-      <div className="mx-auto grid max-w-7xl gap-12 px-4 py-12 md:px-8 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr] lg:py-16">
-        <div className="flex flex-col gap-4">
-          <Logo />
-          <p className="max-w-xs text-base text-gray-600">{site.description}</p>
+    <footer className="mt-auto bg-ink text-gray-300">
+      <div className="mx-auto max-w-7xl px-4 pt-16 md:px-8 md:pt-20">
+        <div className="grid gap-12 border-b border-white/10 pb-14 lg:grid-cols-[1.3fr_1fr_1fr_1.2fr]">
+          <div className="max-w-sm">
+            <Logo inverted />
+            <p className="mt-5 text-[15px] leading-relaxed text-gray-400">{site.description}</p>
+          </div>
+          {columns.map((c) => (
+            <div key={c.title}>
+              <h3 className="text-[13px] font-semibold uppercase tracking-[0.14em] text-gray-500">{c.title}</h3>
+              <ul className="mt-5 flex flex-col gap-3 text-[15px]">
+                {c.links.map(([label, href]) => (
+                  <li key={href}>
+                    <Link href={href} className="text-gray-300 transition hover:text-white">
+                      {label}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+          <div>
+            <h3 className="text-[13px] font-semibold uppercase tracking-[0.14em] text-gray-500">Visit or call</h3>
+            <address className="mt-5 flex flex-col gap-3 text-[15px] not-italic">
+              <span className="text-gray-300">{site.address}</span>
+              <span className="text-gray-400">{site.storeHours}</span>
+              <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="font-medium text-white hover:underline hover:underline-offset-4">
+                {site.phone}
+              </a>
+              <a href={`mailto:${site.email}`} className="text-gray-300 hover:text-white">
+                {site.email}
+              </a>
+            </address>
+          </div>
         </div>
-        <div>
-          <h3 className="text-sm font-semibold text-gray-500">Pharmacy</h3>
-          <ul className="mt-4 flex flex-col gap-3 text-base font-semibold text-gray-600">
-            <li><Link href="/drugs" className="hover:text-gray-900">Browse medicines</Link></li>
-            <li><Link href="/request" className="hover:text-gray-900">Send a request</Link></li>
-            <li><Link href="/consult" className="hover:text-gray-900">Book a consultation</Link></li>
-          </ul>
-        </div>
-        <div>
-          <h3 className="text-sm font-semibold text-gray-500">Account</h3>
-          <ul className="mt-4 flex flex-col gap-3 text-base font-semibold text-gray-600">
-            <li><Link href="/account" className="hover:text-gray-900">My requests</Link></li>
-            <li><Link href="/account?tab=consultations" className="hover:text-gray-900">My consultations</Link></li>
-            <li><Link href="/admin/login" className="hover:text-gray-900">Staff login</Link></li>
-          </ul>
-        </div>
-        <div>
-          <h3 className="text-sm font-semibold text-gray-500">Visit or call</h3>
-          <ul className="mt-4 flex flex-col gap-3 text-base text-gray-600">
-            <li className="flex gap-2"><MarkerPin01 className="mt-0.5 size-5 shrink-0 text-gray-400" />{site.address}</li>
-            <li className="flex gap-2"><Phone className="mt-0.5 size-5 shrink-0 text-gray-400" /><a href={`tel:${site.phone.replace(/\s/g, "")}`} className="hover:text-gray-900">{site.phone}</a></li>
-            <li className="flex gap-2"><Mail01 className="mt-0.5 size-5 shrink-0 text-gray-400" /><a href={`mailto:${site.email}`} className="hover:text-gray-900">{site.email}</a></li>
-          </ul>
-        </div>
-      </div>
-      <div className="border-t border-gray-200">
-        <div className="mx-auto flex max-w-7xl flex-col gap-2 px-4 py-6 text-sm text-gray-500 md:flex-row md:justify-between md:px-8">
-          <p>© <Year /> {site.name}. {site.pcnNotice}</p>
-          <p>Information on this site does not replace advice from your doctor. In an emergency call 112.</p>
+        <div className="flex flex-col gap-3 py-8 text-[13px] leading-relaxed text-gray-500 lg:flex-row lg:justify-between">
+          <p>
+            © <Year /> {site.name}. {site.pcnNotice} {site.premisesLicence}. Superintendent: {site.superintendent.name}.
+          </p>
+          <p>Information on this site doesn’t replace advice from your doctor. In an emergency, call 112.</p>
         </div>
       </div>
     </footer>

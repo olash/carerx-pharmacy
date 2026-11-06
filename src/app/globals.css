@@ -1,43 +1,57 @@
 @import "tailwindcss";
 
 /*
- * Untitled UI design tokens (v6 palette).
- * Brand = Untitled "Teal" — reads clinical, calm and trustworthy for a pharmacy.
+ * Untitled UI design tokens, warm & trusted theme.
+ * Gray = Untitled "Gray (warm)". Brand = "Forest" green. Accent = "Marigold".
  * Swap the --color-brand-* values to rebrand the whole product.
  */
 @theme {
   --font-sans: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-newsreader), ui-serif, Georgia, serif;
+
+  /* Paper — warm off-white surfaces for editorial sections */
+  --color-paper: #f8f5ef;
+  --color-paper-2: #f1ece3;
+  --color-ink: #1c1917;
+
+  /* Marigold accent (use sparingly) */
+  --color-marigold-50: #fef7e8;
+  --color-marigold-100: #fcebc4;
+  --color-marigold-300: #f5c462;
+  --color-marigold-400: #efae3a;
+  --color-marigold-500: #e49a1f;
+  --color-marigold-700: #9a5b0c;
 
   --color-white: #ffffff;
   --color-black: #000000;
 
-  /* Gray (Untitled "Gray light mode") */
-  --color-gray-25: #fcfcfd;
-  --color-gray-50: #f9fafb;
-  --color-gray-100: #f2f4f7;
-  --color-gray-200: #eaecf0;
-  --color-gray-300: #d0d5dd;
-  --color-gray-400: #98a2b3;
-  --color-gray-500: #667085;
-  --color-gray-600: #475467;
-  --color-gray-700: #344054;
-  --color-gray-800: #182230;
-  --color-gray-900: #101828;
-  --color-gray-950: #0c111d;
+  /* Gray (Untitled "Gray warm") */
+  --color-gray-25: #fdfdfc;
+  --color-gray-50: #fafaf9;
+  --color-gray-100: #f5f5f4;
+  --color-gray-200: #e7e5e4;
+  --color-gray-300: #d7d3d0;
+  --color-gray-400: #a9a29d;
+  --color-gray-500: #79716b;
+  --color-gray-600: #57534e;
+  --color-gray-700: #44403c;
+  --color-gray-800: #292524;
+  --color-gray-900: #1c1917;
+  --color-gray-950: #171412;
 
-  /* Brand (Untitled "Teal") */
-  --color-brand-25: #f6fefc;
-  --color-brand-50: #f0fdf9;
-  --color-brand-100: #ccfbef;
-  --color-brand-200: #99f6e0;
-  --color-brand-300: #5fe9d0;
-  --color-brand-400: #2ed3b7;
-  --color-brand-500: #15b79e;
-  --color-brand-600: #0e9384;
-  --color-brand-700: #107569;
-  --color-brand-800: #125d56;
-  --color-brand-900: #134e48;
-  --color-brand-950: #0a2926;
+  /* Brand — "Forest" (custom scale, Untitled step structure) */
+  --color-brand-25: #f4f8f5;
+  --color-brand-50: #e9f2ec;
+  --color-brand-100: #d2e4d8;
+  --color-brand-200: #a6cab3;
+  --color-brand-300: #73aa89;
+  --color-brand-400: #468763;
+  --color-brand-500: #2c6e4b;
+  --color-brand-600: #1f5c3e;
+  --color-brand-700: #194b33;
+  --color-brand-800: #153d2a;
+  --color-brand-900: #113122;
+  --color-brand-950: #0a1f15;
 
   /* Error */
   --color-error-25: #fffbfa;
@@ -133,6 +147,11 @@
   body {
     background: var(--color-white);
     color: var(--color-gray-900);
+    font-feature-settings: "cv11", "ss01";
+  }
+  .font-display {
+    font-optical-sizing: auto;
+    letter-spacing: -0.015em;
   }
   ::selection {
     background: var(--color-brand-100);
@@ -141,7 +160,7 @@
 
 /* Untitled focus rings */
 @utility ring-focus {
-  box-shadow: 0 0 0 4px rgba(14, 147, 132, 0.24);
+  box-shadow: 0 0 0 4px rgba(31, 92, 62, 0.22);
 }
 @utility ring-focus-error {
   box-shadow: 0 0 0 4px rgba(240, 68, 56, 0.24);

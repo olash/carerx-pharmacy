@@ -53,7 +53,7 @@ async function Account({ searchParams }: { searchParams: PageProps<"/account">["
       <LiveRefresh channel={`acct-req:${profile.id}`} table="drug_requests" filter={`patient_id=eq.${profile.id}`} events="UPDATE" />
       <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
         <div>
-          <h1 className="text-display-xs font-semibold text-gray-900 md:text-display-sm">
+          <h1 className="font-display text-4xl font-medium leading-tight text-ink md:text-5xl">
             {firstName ? `Welcome back, ${firstName}` : "My account"}
           </h1>
           <p className="mt-1 text-base text-gray-600">Track your requests and chat with your pharmacist.</p>

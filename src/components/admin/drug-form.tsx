@@ -88,7 +88,7 @@ export function DrugForm({ drug, categories }: { drug?: Drug; categories: Catego
 
       <Section title="Photo" description="Optional. A clean pack shot on a white background works best. Without one we show a neat placeholder.">
         <div className="flex items-start gap-5">
-          <DrugThumb name={name || "New medicine"} form={form} imageUrl={imageUrl || null} size="md" className="size-24 shrink-0 rounded-xl ring-1 ring-gray-200" />
+          <DrugThumb name={name || "New medicine"} form={form} imageUrl={imageUrl || null} size="sm" className="size-24 shrink-0 rounded-xl ring-1 ring-gray-200" />
           <div className="flex flex-col gap-3">
             <label className={buttonClasses("secondary", "md", "cursor-pointer")}>
               <ImagePlus className="size-5" /> {uploading ? "Uploading…" : imageUrl ? "Replace image" : "Upload image"}

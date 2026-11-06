@@ -1,14 +1,18 @@
 /* eslint-disable @next/next/no-img-element */
 import { cn } from "@/lib/utils";
 
-const palettes = [
-  { bg: "bg-brand-50", fg: "text-brand-600", accent: "fill-brand-200" },
-  { bg: "bg-blue-50", fg: "text-blue-600", accent: "fill-blue-200" },
-  { bg: "bg-warning-50", fg: "text-warning-600", accent: "fill-warning-200" },
-  { bg: "bg-purple-50", fg: "text-purple-700", accent: "fill-purple-200" },
-  { bg: "bg-error-50", fg: "text-error-600", accent: "fill-error-200" },
-  { bg: "bg-success-50", fg: "text-success-600", accent: "fill-success-200" },
-  { bg: "bg-indigo-50", fg: "text-indigo-700", accent: "fill-indigo-200" },
+/**
+ * Packaging-style product tile. Without a photo we render a small "carton"
+ * set in the product's own details, on a muted paper tone — closer to a real
+ * pharmacy shelf than an icon.
+ */
+const tones = [
+  { bg: "bg-[#e6ede6]", band: "bg-[#2c6e4b]" }, // sage
+  { bg: "bg-[#efe3d8]", band: "bg-[#a4552f]" }, // clay
+  { bg: "bg-[#e1e8ee]", band: "bg-[#2f5f86]" }, // sky
+  { bg: "bg-[#f1e8d4]", band: "bg-[#b07a12]" }, // sand
+  { bg: "bg-[#e9e1ea]", band: "bg-[#6e3f73]" }, // plum
+  { bg: "bg-[#e7e4de]", band: "bg-[#44403c]" }, // stone
 ];
 
 function hash(s: string) {
@@ -17,77 +21,73 @@ function hash(s: string) {
   return Math.abs(h);
 }
 
-function FormGlyph({ form, className, accent }: { form: string; className?: string; accent: string }) {
-  const f = form.toLowerCase();
-  if (/(syrup|suspension|bottle|solution)/.test(f))
-    return (
-      <svg viewBox="0 0 48 48" className={className} fill="none" aria-hidden>
-        <rect x="17" y="6" width="14" height="6" rx="1.5" className={accent} />
-        <path d="M15 16a4 4 0 0 1 4-4h10a4 4 0 0 1 4 4v24a3 3 0 0 1-3 3H18a3 3 0 0 1-3-3V16Z" stroke="currentColor" strokeWidth="2" />
-        <rect x="18" y="22" width="12" height="11" rx="1.5" className={accent} />
-      </svg>
-    );
-  if (/(inject|insulin|vial)/.test(f))
-    return (
-      <svg viewBox="0 0 48 48" className={className} fill="none" aria-hidden>
-        <rect x="18" y="5" width="12" height="5" rx="1.5" className={accent} />
-        <path d="M17 14h14v26a3 3 0 0 1-3 3h-8a3 3 0 0 1-3-3V14Z" stroke="currentColor" strokeWidth="2" />
-        <path d="M17 24h14" stroke="currentColor" strokeWidth="2" />
-        <rect x="19" y="26" width="10" height="10" rx="1" className={accent} />
-      </svg>
-    );
-  if (/(gel|cream|ointment)/.test(f))
-    return (
-      <svg viewBox="0 0 48 48" className={className} fill="none" aria-hidden>
-        <path d="M14 10h20l-3 30H17L14 10Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round" />
-        <rect x="19" y="4" width="10" height="6" rx="1.5" className={accent} />
-        <path d="M17 22h14" stroke="currentColor" strokeWidth="2" />
-      </svg>
-    );
-  if (/(device|monitor|kit|strip|bandage|inhaler)/.test(f))
-    return (
-      <svg viewBox="0 0 48 48" className={className} fill="none" aria-hidden>
-        <rect x="9" y="12" width="30" height="24" rx="4" stroke="currentColor" strokeWidth="2" />
-        <rect x="14" y="17" width="20" height="9" rx="2" className={accent} />
-        <circle cx="24" cy="31" r="2" fill="currentColor" />
-      </svg>
-    );
-  // tablets / capsules (default)
-  return (
-    <svg viewBox="0 0 48 48" className={className} fill="none" aria-hidden>
-      <g transform="rotate(-40 24 24)">
-        <rect x="8" y="17" width="32" height="14" rx="7" stroke="currentColor" strokeWidth="2" />
-        <path d="M24 17h9a7 7 0 0 1 0 14h-9V17Z" className={accent} />
-      </g>
-    </svg>
-  );
-}
-
 export function DrugThumb({
   name,
   form,
   imageUrl,
+  brand,
+  strength,
   className,
   size = "md",
 }: {
   name: string;
   form?: string | null;
   imageUrl?: string | null;
+  brand?: string | null;
+  strength?: string | null;
   className?: string;
   size?: "sm" | "md" | "lg";
 }) {
-  const p = palettes[hash(name) % palettes.length]!;
-  const glyph = { sm: "size-6", md: "size-14", lg: "size-24" }[size];
+  const t = tones[hash(brand || name) % tones.length]!;
   if (imageUrl) {
     return (
-      <div className={cn("overflow-hidden bg-gray-50", className)}>
-        <img src={imageUrl} alt="" className="size-full object-contain" loading="lazy" />
+      <div className={cn("overflow-hidden bg-paper", className)}>
+        <img src={imageUrl} alt="" className="size-full object-contain p-3" loading="lazy" />
       </div>
     );
   }
+
+  if (size === "sm") {
+    return (
+      <div className={cn("flex items-center justify-center", t.bg, className)} aria-hidden>
+        <div className="flex h-[62%] w-[52%] flex-col overflow-hidden rounded-[3px] bg-white shadow-[0_1px_2px_rgba(28,25,23,0.12)]">
+          <div className={cn("h-[22%]", t.band)} />
+          <div className="flex flex-1 items-center justify-center font-display text-[11px] font-semibold leading-none text-ink">
+            {name.charAt(0)}
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  const cleanName = strength ? name.replace(strength, "").trim() : name;
+  const lg = size === "lg";
   return (
-    <div className={cn("flex items-center justify-center", p.bg, p.fg, className)} aria-hidden>
-      <FormGlyph form={form ?? ""} className={glyph} accent={p.accent} />
+    <div className={cn("flex items-center justify-center", t.bg, className)} aria-hidden>
+      {/* carton: front face + a slim shaded side for depth */}
+      <div className={cn("relative flex", lg ? "w-[56%] max-w-[300px]" : "w-[54%] max-w-[210px]")}>
+        <div
+          className={cn(
+            "relative flex aspect-[4/3.1] w-full flex-col overflow-hidden rounded-[3px] bg-[#fffdf9] text-left shadow-[0_1px_1px_rgba(28,25,23,0.06),0_14px_28px_-10px_rgba(28,25,23,0.35)]",
+          )}
+        >
+          <div className={cn(t.band, lg ? "h-3" : "h-2")} />
+          <div className={cn("flex flex-1 flex-col", lg ? "gap-2 p-6" : "gap-1 p-3.5")}>
+            <span className={cn("truncate font-semibold uppercase tracking-[0.14em] text-gray-500", lg ? "text-xs" : "text-[9px]")}>
+              {brand || form || "\u00a0"}
+            </span>
+            <span className={cn("line-clamp-2 font-display font-semibold leading-[1.1] text-ink", lg ? "text-[32px]" : "text-[17px]")}>
+              {cleanName}
+            </span>
+            <span className={cn("mt-auto flex items-end justify-between gap-2", lg ? "text-sm" : "text-[10px]")}>
+              <span className={cn("font-semibold text-ink", lg ? "text-lg" : "text-xs")}>{strength}</span>
+              <span className="truncate text-gray-500">{form}</span>
+            </span>
+          </div>
+          <div className={cn("absolute bottom-0 left-0 right-0", t.band, "h-[3px] opacity-60")} />
+        </div>
+        <div className="absolute -right-[7%] top-[3px] bottom-[3px] w-[7%] rounded-r-[3px] bg-gradient-to-r from-black/[0.10] to-black/[0.02] [transform:skewY(-20deg)] origin-left" />
+      </div>
     </div>
   );
 }

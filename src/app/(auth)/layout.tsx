@@ -1,44 +1,40 @@
-import { CheckVerified02 } from "@untitledui/icons";
+import Image from "next/image";
 import { Logo } from "@/components/site/logo";
-import { Avatar } from "@/components/ui/avatar";
 import { site } from "@/lib/config";
 
 export default function AuthLayout({ children }: LayoutProps<"/">) {
   return (
-    <div className="grid min-h-dvh lg:grid-cols-2">
-      <div className="flex flex-col px-4 py-8 sm:px-8">
+    <div className="grid min-h-dvh bg-white lg:grid-cols-[1fr_1.05fr]">
+      <div className="flex flex-col px-4 py-8 sm:px-10">
         <Logo />
         <div className="mx-auto flex w-full max-w-sm flex-1 flex-col justify-center py-12">{children}</div>
-        <p className="text-sm text-gray-500">© {site.name}</p>
+        <p className="text-[13px] text-gray-500">
+          {site.pcnNotice} {site.address}
+        </p>
       </div>
-      <div className="relative hidden overflow-hidden bg-brand-950 lg:flex lg:flex-col lg:justify-end lg:p-16">
-        <svg className="absolute inset-0 h-full w-full text-white/5" aria-hidden>
-          <defs>
-            <pattern id="auth-grid" width="56" height="56" patternUnits="userSpaceOnUse">
-              <path d="M56 0H0V56" fill="none" stroke="currentColor" />
-            </pattern>
-          </defs>
-          <rect width="100%" height="100%" fill="url(#auth-grid)" />
-        </svg>
-        <div className="relative">
-          <blockquote className="text-display-sm font-medium text-white">
-            “I sent my prescription at lunch and my meds were at my door before 5pm. The pharmacist even called to explain the dosage.”
-          </blockquote>
-          <div className="mt-8 flex items-center gap-4">
-            <Avatar name="Tolu Adeyemi" size="lg" className="bg-brand-100 text-brand-800" />
-            <div>
-              <p className="text-lg font-semibold text-white">Tolu Adeyemi</p>
-              <p className="text-base text-brand-200">Patient, Lekki</p>
-            </div>
+      <div className="relative hidden p-4 lg:block">
+        <div className="relative h-full overflow-hidden rounded-[28px] bg-gray-200">
+          <Image
+            src="/images/hero-lagos-pharmacy.webp"
+            alt="A pharmacist helping a customer choose medicine"
+            fill
+            priority
+            sizes="50vw"
+            className="object-cover object-[62%_center]"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-ink/85 via-ink/10 to-transparent" />
+          <div className="absolute inset-x-0 bottom-0 p-10 xl:p-14">
+            <p className="max-w-md font-display text-4xl font-medium leading-[1.1] text-white">
+              The same pharmacist you’d see at the counter, <em className="font-normal text-marigold-300">a message away.</em>
+            </p>
+            <ul className="mt-8 flex flex-wrap gap-x-6 gap-y-2 text-[15px] text-gray-200">
+              {["Licensed by the PCN", "Pay on pickup or delivery", "Private chats"].map((t) => (
+                <li key={t} className="flex items-center gap-2">
+                  <span className="size-1.5 rounded-full bg-marigold-300" aria-hidden /> {t}
+                </li>
+              ))}
+            </ul>
           </div>
-          <ul className="mt-12 grid grid-cols-2 gap-4 text-sm text-brand-100">
-            {["Licensed pharmacists", "Pay on delivery", "Private consultations", "Genuine medicines"].map((t) => (
-              <li key={t} className="flex items-center gap-2">
-                <CheckVerified02 className="size-5 text-brand-300" />
-                {t}
-              </li>
-            ))}
-          </ul>
         </div>
       </div>
     </div>

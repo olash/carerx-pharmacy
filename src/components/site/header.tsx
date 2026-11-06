@@ -12,7 +12,8 @@ import { site } from "@/lib/config";
 
 export const navLinks = [
   { href: "/drugs", label: "Medicines" },
-  { href: "/consult", label: "Talk to a pharmacist" },
+  { href: "/request", label: "Send a prescription" },
+  { href: "/consult", label: "Ask a pharmacist" },
   { href: "/#how-it-works", label: "How it works" },
 ];
 
@@ -42,10 +43,10 @@ async function HeaderAccount() {
   if (!user) {
     return (
       <div className="hidden items-center gap-3 md:flex">
-        <ButtonLink href="/login" variant="tertiary">
+        <Link href="/login" className="px-2 text-[15px] font-medium text-gray-700 hover:text-ink">
           Log in
-        </ButtonLink>
-        <ButtonLink href="/signup">Sign up</ButtonLink>
+        </Link>
+        <ButtonLink href="/signup" className="rounded-full px-4">Create account</ButtonLink>
       </div>
     );
   }
@@ -54,24 +55,30 @@ async function HeaderAccount() {
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/80">
-      <div className="hidden bg-brand-700 text-brand-50 md:block">
-        <div className="mx-auto flex h-9 max-w-7xl items-center justify-between gap-6 px-4 text-xs font-medium md:px-8">
-          <span className="truncate">{site.pcnNotice} Pay on pickup or delivery.</span>
-          <span className="hidden shrink-0 opacity-90 lg:inline">
-            {site.storeHours} · <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="underline-offset-2 hover:underline">{site.phone}</a>
-          </span>
+    <header className="sticky top-0 z-40 border-b border-gray-200/80 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/75">
+      <div className="hidden border-b border-gray-200/70 bg-paper md:block">
+        <div className="mx-auto flex h-9 max-w-7xl items-center justify-between gap-6 px-4 text-[13px] text-gray-600 md:px-8">
+          <p className="flex items-center gap-2 truncate">
+            <span className="size-1.5 shrink-0 rounded-full bg-success-500" aria-hidden />
+            Pharmacist on duty · {site.openingShort}
+          </p>
+          <p className="hidden shrink-0 items-center gap-5 lg:flex">
+            <span>{site.address}</span>
+            <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="font-medium text-gray-900 underline-offset-4 hover:underline">
+              {site.phone}
+            </a>
+          </p>
         </div>
       </div>
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 md:h-[72px] md:px-8">
         <MobileNav links={navLinks} auth={<Suspense fallback={null}><MobileNavAuth /></Suspense>} />
         <Logo />
-        <nav className="ml-6 hidden items-center gap-1 lg:flex" aria-label="Main">
+        <nav className="ml-8 hidden items-center gap-7 lg:flex" aria-label="Main">
           {navLinks.map((l) => (
             <Link
               key={l.href}
               href={l.href}
-              className="rounded-md px-3 py-2 text-base font-semibold text-gray-600 outline-none hover:text-gray-900 focus-visible:ring-focus"
+              className="rounded-sm text-[15px] font-medium text-gray-700 outline-none transition hover:text-ink focus-visible:ring-focus"
             >
               {l.label}
             </Link>

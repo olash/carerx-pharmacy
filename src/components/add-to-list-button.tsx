@@ -4,6 +4,7 @@ import { Check, Plus } from "@untitledui/icons";
 import { useState } from "react";
 import { useRequestList } from "@/components/providers/request-list";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 export type AddableDrug = {
   id: string;
@@ -24,6 +25,7 @@ export function AddToListButton({
   className,
   openDrawer = false,
   label = "Add to request",
+  variant = "primary",
 }: {
   drug: AddableDrug;
   qty?: number;
@@ -31,6 +33,7 @@ export function AddToListButton({
   className?: string;
   openDrawer?: boolean;
   label?: string;
+  variant?: "primary" | "quiet";
 }) {
   const { add, setOpen, items } = useRequestList();
   const [justAdded, setJustAdded] = useState(false);
@@ -40,9 +43,9 @@ export function AddToListButton({
   return (
     <Button
       size={size}
-      variant={out ? "secondary" : inList ? "secondary-color" : "primary"}
+      variant={inList ? "secondary-color" : variant === "quiet" || out ? "secondary" : "primary"}
       iconLeading={justAdded ? Check : Plus}
-      className={className}
+      className={cn(variant === "quiet" && "rounded-full", className)}
       onClick={() => {
         add({
           drugId: drug.id,
@@ -59,7 +62,7 @@ export function AddToListButton({
         if (openDrawer) setOpen(true);
       }}
     >
-      {justAdded ? "Added" : out ? "Request anyway" : label}
+      {justAdded ? "Added to your list" : inList ? "Add another" : out ? "Request anyway" : label}
     </Button>
   );
 }

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { SearchLg, ChevronLeft, ChevronRight, FilterLines } from "@untitledui/icons";
+import { SearchLg, ChevronLeft, ChevronRight } from "@untitledui/icons";
 import { getCategories, PAGE_SIZE, searchDrugs } from "@/lib/data/catalogue";
 import { DrugCard, DrugCardSkeleton } from "@/components/drug-card";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -16,15 +16,22 @@ const one = (v: string | string[] | undefined) => (Array.isArray(v) ? v[0] : v) 
 
 export default function DrugsPage({ searchParams }: PageProps<"/drugs">) {
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-8 md:px-8 md:py-12">
-      <div className="flex flex-col gap-1">
-        <h1 className="text-display-xs font-semibold text-gray-900 md:text-display-sm">Medicines</h1>
-        <p className="text-base text-gray-600">Add items to your request list — a pharmacist confirms price and availability before you pay.</p>
+    <>
+      <div className="border-b border-gray-200 bg-paper">
+        <div className="mx-auto w-full max-w-7xl px-4 pb-10 pt-10 md:px-8 md:pb-14 md:pt-16">
+          <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-brand-700">The shelf</p>
+          <h1 className="mt-3 font-display text-5xl font-medium leading-none text-ink md:text-6xl">Medicines</h1>
+          <p className="mt-4 max-w-2xl text-lg leading-relaxed text-gray-600">
+            Add what you need to your list. A pharmacist confirms price and availability before anything is charged.
+          </p>
+        </div>
       </div>
-      <Suspense fallback={<CatalogueSkeleton />}>
-        <Catalogue searchParams={searchParams} />
-      </Suspense>
-    </div>
+      <div className="mx-auto w-full max-w-7xl px-4 pb-20 md:px-8">
+        <Suspense fallback={<CatalogueSkeleton />}>
+          <Catalogue searchParams={searchParams} />
+        </Suspense>
+      </div>
+    </>
   );
 }
 
@@ -54,12 +61,12 @@ async function Catalogue({ searchParams }: { searchParams: Promise<SP> }) {
 
   const chip = (active: boolean) =>
     cn(
-      "inline-flex h-9 shrink-0 items-center rounded-lg px-3 text-sm font-semibold ring-1 ring-inset transition",
-      active ? "bg-brand-50 text-brand-700 ring-brand-300" : "bg-white text-gray-700 ring-gray-300 hover:bg-gray-50",
+      "inline-flex h-9 shrink-0 items-center rounded-full px-3.5 text-sm font-medium ring-1 ring-inset transition",
+      active ? "bg-ink text-white ring-ink" : "bg-white text-gray-700 ring-gray-300 hover:bg-gray-50",
     );
 
   return (
-    <div className="mt-6 grid gap-8 lg:grid-cols-[240px_1fr]">
+    <div className="mt-8 grid gap-10 lg:grid-cols-[240px_1fr]">
       {/* Filters */}
       <aside className="flex min-w-0 flex-col gap-6">
         <form action="/drugs" className="relative" role="search">
@@ -72,23 +79,21 @@ async function Catalogue({ searchParams }: { searchParams: Promise<SP> }) {
             defaultValue={q}
             placeholder="Search medicines"
             aria-label="Search medicines"
-            className="h-11 w-full rounded-lg bg-white pl-10 pr-3 text-base shadow-xs ring-1 ring-inset ring-gray-300 outline-none placeholder:text-gray-500 focus:ring-2 focus:ring-brand-600"
+            className="h-11 w-full rounded-full bg-white pl-10 pr-4 text-base ring-1 ring-inset ring-gray-300 outline-none placeholder:text-gray-500 focus:ring-2 focus:ring-brand-600"
           />
         </form>
 
         <div>
-          <h2 className="flex items-center gap-2 text-sm font-semibold text-gray-900">
-            <FilterLines className="size-4 text-gray-500" /> Category
-          </h2>
+          <h2 className="text-[13px] font-semibold uppercase tracking-[0.14em] text-gray-500">Category</h2>
           <nav className="-mx-4 mt-3 flex gap-2 overflow-x-auto px-4 pb-1 scrollbar-none lg:mx-0 lg:flex-col lg:gap-0.5 lg:overflow-visible lg:px-0" aria-label="Categories">
-            <Link href={buildHref(sp, { category: undefined, page: undefined })} className={cn(chip(!category), "lg:h-auto lg:justify-start lg:rounded-md lg:px-3 lg:py-2 lg:ring-0", !category ? "lg:bg-gray-50 lg:text-gray-900" : "lg:bg-transparent lg:font-medium lg:text-gray-600")}>
+            <Link href={buildHref(sp, { category: undefined, page: undefined })} className={cn(chip(!category), "lg:h-auto lg:justify-start lg:rounded-md lg:px-0 lg:py-1.5 lg:ring-0 lg:bg-transparent", !category ? "lg:font-semibold lg:text-ink" : "lg:font-normal lg:text-gray-600 lg:hover:text-ink")}>
               All categories
             </Link>
             {categories.map((c) => (
               <Link
                 key={c.id}
                 href={buildHref(sp, { category: c.slug, page: undefined })}
-                className={cn(chip(c.slug === category), "lg:h-auto lg:justify-start lg:rounded-md lg:px-3 lg:py-2 lg:ring-0", c.slug === category ? "lg:bg-gray-50 lg:text-gray-900" : "lg:bg-transparent lg:font-medium lg:text-gray-600")}
+                className={cn(chip(c.slug === category), "lg:h-auto lg:justify-start lg:rounded-md lg:px-0 lg:py-1.5 lg:ring-0 lg:bg-transparent", c.slug === category ? "lg:font-semibold lg:text-ink" : "lg:font-normal lg:text-gray-600 lg:hover:text-ink")}
               >
                 {c.name}
               </Link>
@@ -110,7 +115,7 @@ async function Catalogue({ searchParams }: { searchParams: Promise<SP> }) {
           </div>
         </div>
 
-        <div className="hidden rounded-xl bg-gray-50 p-4 lg:block">
+        <div className="hidden rounded-2xl bg-paper p-4 lg:block">
           <AddCustomItem />
         </div>
       </aside>
@@ -135,7 +140,7 @@ async function Catalogue({ searchParams }: { searchParams: Promise<SP> }) {
         </div>
 
         {drugs.length === 0 ? (
-          <div className="rounded-xl ring-1 ring-gray-200">
+          <div className="rounded-2xl bg-paper">
             <EmptyState
               icon={SearchLg}
               title="No medicines found"
@@ -144,7 +149,7 @@ async function Catalogue({ searchParams }: { searchParams: Promise<SP> }) {
             />
           </div>
         ) : (
-          <div className="grid grid-cols-1 gap-4 min-[420px]:grid-cols-2 md:gap-6 xl:grid-cols-3">
+          <div className="grid grid-cols-1 gap-x-6 gap-y-12 min-[420px]:grid-cols-2 xl:grid-cols-3">
             {drugs.map((d) => (
               <DrugCard key={d.id} drug={d} />
             ))}
@@ -179,14 +184,14 @@ async function Catalogue({ searchParams }: { searchParams: Promise<SP> }) {
 
 function CatalogueSkeleton() {
   return (
-    <div className="mt-6 grid gap-8 lg:grid-cols-[240px_1fr]">
+    <div className="mt-8 grid gap-10 lg:grid-cols-[240px_1fr]">
       <div className="flex flex-col gap-3">
         <div className="h-11 animate-pulse rounded-lg bg-gray-100" />
         {Array.from({ length: 6 }, (_, i) => (
           <div key={i} className="h-8 animate-pulse rounded-md bg-gray-50" />
         ))}
       </div>
-      <div className="grid grid-cols-1 gap-4 min-[420px]:grid-cols-2 md:gap-6 xl:grid-cols-3">
+      <div className="grid grid-cols-1 gap-x-6 gap-y-12 min-[420px]:grid-cols-2 xl:grid-cols-3">
         {Array.from({ length: 6 }, (_, i) => (
           <DrugCardSkeleton key={i} />
         ))}

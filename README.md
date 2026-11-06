@@ -4,6 +4,24 @@ An online pharmacy for Nigeria. Patients send **drug requests** (with prescripti
 
 **Stack:** Next.js 16 (App Router, Cache Components) · Tailwind CSS v4 with **Untitled UI** design tokens and `@untitledui/icons` · Supabase (Postgres, Auth, Storage, Realtime) · deployable on Vercel.
 
+## Brand & design system
+- **Direction:** warm & trusted — an editorial, neighbourhood-pharmacy feel rather than a generic SaaS template.
+- **Colour:** Untitled UI *Gray (warm)* neutrals, a custom **Forest** brand scale (`--color-brand-*`), a sparing **Marigold** accent, and **Paper** off-white surfaces. All tokens live in `src/app/globals.css`.
+- **Type:** *Newsreader* (serif, optical sizes) for headlines; *Inter* (Untitled UI's typeface) for interface text.
+- **Logo:** `src/components/site/logo.tsx` (also `src/app/icon.svg`).
+- **Product imagery:** without a product photo, medicines render as typeset "cartons" (`drug-thumb.tsx`) using the product's real brand, name and strength. Upload real pack shots from Admin → Inventory to replace them.
+- **Business details** (address, phone, superintendent pharmacist, licence numbers) are in `src/lib/config.ts`. Items marked `PLACEHOLDER` must be replaced before launch.
+
+### Photo credits
+Photos are from [Pexels](https://www.pexels.com/license/) (free for commercial use; attribution not required) and are self-hosted in `public/images/`:
+[hero / sign-in](https://www.pexels.com/photo/30678215/) ·
+[pharmacist portrait](https://www.pexels.com/photo/19218034/) ·
+[superintendent portrait](https://www.pexels.com/photo/3714743/) ·
+[patient at home](https://www.pexels.com/photo/5938231/) ·
+[care at home](https://www.pexels.com/photo/7551652/) ·
+[prescription bottles](https://www.pexels.com/photo/15307047/).
+Replace them with photos of your own team and store when you can — it's the single biggest trust signal.
+
 ---
 
 ## What's inside

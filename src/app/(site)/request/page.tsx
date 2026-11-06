@@ -14,9 +14,10 @@ export const metadata: Metadata = { title: "Send a request" };
 
 export default function RequestPage() {
   return (
-    <div className="mx-auto w-full max-w-7xl px-4 py-8 md:px-8 md:py-12">
-      <h1 className="text-display-xs font-semibold text-gray-900 md:text-display-sm">Send a drug request</h1>
-      <p className="mt-1 text-base text-gray-600">Review your list, add a prescription if needed, and tell us how you’d like to receive it.</p>
+    <div className="mx-auto w-full max-w-7xl px-4 py-10 md:px-8 md:py-16">
+      <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-brand-700">No payment now</p>
+      <h1 className="mt-3 font-display text-4xl font-medium leading-tight text-ink md:text-5xl">Send your request</h1>
+      <p className="mt-3 max-w-2xl text-lg text-gray-600">Review your list, add a prescription if needed, and tell us how you’d like to receive it.</p>
       <div className="mt-8">
         <Suspense fallback={<Skeleton className="h-[480px] w-full rounded-xl" />}>
           <RequestGate />

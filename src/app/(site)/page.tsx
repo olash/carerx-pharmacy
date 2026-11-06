@@ -1,79 +1,57 @@
+import Image from "next/image";
 import Link from "next/link";
 import { Suspense } from "react";
-import {
-  ArrowRight,
-  CalendarCheck01,
-  CheckVerified02,
-  ChevronDown,
-  File06,
-  MessageChatCircle,
-  SearchLg,
-  ShieldTick,
-  ShoppingBag03,
-  Truck01,
-  Wallet02,
-} from "@untitledui/icons";
+import { ArrowRight, ArrowUpRight, SearchLg } from "@untitledui/icons";
 import { ButtonLink } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { FeaturedIcon } from "@/components/ui/featured-icon";
-import { Avatar } from "@/components/ui/avatar";
 import { DrugCard, DrugCardSkeleton } from "@/components/drug-card";
-import { categoryIcon } from "@/components/category-icon";
-import { getCategories, getFeaturedDrugs } from "@/lib/data/catalogue";
+import { getCategoriesWithCounts, getFeaturedDrugs } from "@/lib/data/catalogue";
 import { site } from "@/lib/config";
 
 export default function HomePage() {
   return (
     <>
       <Hero />
-      <TrustBar />
-      <section className="mx-auto w-full max-w-7xl px-4 py-16 md:px-8 md:py-24">
-        <SectionHeading
-          eyebrow="Shop by need"
-          title="Find what you need, fast"
-          description="Browse by category or search over our full shelf. Every request is checked by a licensed pharmacist."
-          action={<ButtonLink href="/drugs" variant="secondary" iconTrailing={ArrowRight}>All medicines</ButtonLink>}
-        />
-        <Suspense fallback={<CategoryGridSkeleton />}>
-          <CategoryGrid />
-        </Suspense>
-      </section>
+      <Services />
       <HowItWorks />
-      <section className="mx-auto w-full max-w-7xl px-4 py-16 md:px-8 md:py-24">
-        <SectionHeading
-          eyebrow="In stock now"
-          title="Popular at the counter"
-          description="Prices shown are our current shelf prices. Your pharmacist confirms the final quote."
-          action={<ButtonLink href="/drugs?availability=in_stock" variant="secondary" iconTrailing={ArrowRight}>See all in stock</ButtonLink>}
+      <section className="mx-auto w-full max-w-7xl px-4 py-20 md:px-8 md:py-28">
+        <SectionTitle
+          kicker="On the shelf"
+          title="Popular this week"
+          action={
+            <Link href="/drugs" className="group inline-flex items-center gap-1.5 text-[15px] font-medium text-ink">
+              Browse all medicines <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
+            </Link>
+          }
         />
-        <Suspense fallback={<div className="mt-10 grid grid-cols-2 gap-4 md:gap-6 lg:grid-cols-4">{Array.from({ length: 4 }, (_, i) => <DrugCardSkeleton key={i} />)}</div>}>
+        <Suspense
+          fallback={
+            <div className="mt-12 grid grid-cols-1 gap-x-6 gap-y-12 min-[460px]:grid-cols-2 lg:grid-cols-4">
+              {Array.from({ length: 4 }, (_, i) => (
+                <DrugCardSkeleton key={i} />
+              ))}
+            </div>
+          }
+        >
           <FeaturedDrugs />
         </Suspense>
       </section>
-      <ConsultBand />
+      <Categories />
+      <Pharmacist />
       <Faq />
-      <CtaBand />
+      <ClosingCta />
     </>
   );
 }
 
-function SectionHeading({
-  eyebrow,
-  title,
-  description,
-  action,
-}: {
-  eyebrow: string;
-  title: string;
-  description: string;
-  action?: React.ReactNode;
-}) {
+/* -------------------------------------------------------------------------- */
+
+function SectionTitle({ kicker, title, intro, action }: { kicker: string; title: string; intro?: string; action?: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
       <div className="max-w-2xl">
-        <p className="text-sm font-semibold text-brand-700 md:text-base">{eyebrow}</p>
-        <h2 className="mt-3 text-display-sm font-semibold text-gray-900 md:text-display-md">{title}</h2>
-        <p className="mt-4 text-lg text-gray-600 md:text-xl">{description}</p>
+        <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-brand-700">{kicker}</p>
+        <h2 className="mt-3 font-display text-4xl font-medium leading-[1.1] text-ink md:text-5xl">{title}</h2>
+        {intro && <p className="mt-4 text-lg leading-relaxed text-gray-600">{intro}</p>}
       </div>
       {action}
     </div>
@@ -82,181 +60,201 @@ function SectionHeading({
 
 function Hero() {
   return (
-    <section className="relative overflow-hidden bg-gradient-to-b from-brand-25 to-white">
-      <svg className="pointer-events-none absolute inset-0 h-full w-full text-brand-100/70 [mask-image:radial-gradient(60%_60%_at_70%_30%,black,transparent)]" aria-hidden>
-        <defs>
-          <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
-            <path d="M48 0H0V48" fill="none" stroke="currentColor" />
-          </pattern>
-        </defs>
-        <rect width="100%" height="100%" fill="url(#grid)" />
-      </svg>
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-4 pb-16 pt-12 md:px-8 md:pb-24 md:pt-20 lg:grid-cols-2 lg:gap-16">
-        <div>
-          <Link
-            href="/consult"
-            className="group inline-flex items-center gap-3 rounded-full bg-white py-1 pl-1 pr-3 text-sm font-medium text-brand-700 shadow-xs ring-1 ring-inset ring-brand-200 hover:bg-brand-25"
-          >
-            <span className="rounded-full bg-brand-50 px-2.5 py-0.5 ring-1 ring-inset ring-brand-200">New</span>
-            Chat with a pharmacist today
-            <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
-          </Link>
-          <h1 className="mt-6 text-display-md font-semibold text-gray-900 sm:text-display-lg lg:text-display-xl">
-            Your medicines, checked by a pharmacist.
-          </h1>
-          <p className="mt-5 max-w-xl text-lg text-gray-600 md:text-xl">
-            Send a drug request, upload your prescription and we’ll confirm availability and price. Pick up in store or get
-            it delivered — you only pay when it arrives.
+    <section className="relative overflow-hidden bg-paper">
+      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-12 px-4 pb-16 pt-10 md:px-8 md:pb-24 md:pt-16 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-16">
+        <div className="min-w-0">
+          <p className="flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.14em] text-brand-700">
+            <span className="h-px w-6 bg-brand-600" aria-hidden />
+            <span className="hidden sm:inline">Community pharmacy ·</span> {site.branch}
           </p>
-          <form action="/drugs" className="mt-8 flex max-w-xl flex-col gap-3 sm:flex-row">
-            <label className="relative flex-1">
-              <span className="sr-only">Search medicines</span>
-              <SearchLg className="pointer-events-none absolute left-3.5 top-1/2 size-5 -translate-y-1/2 text-gray-500" />
-              <input
-                name="q"
-                placeholder="Search e.g. Coartem, Amlodipine, Vitamin C"
-                className="h-12 w-full rounded-lg bg-white pl-11 pr-4 text-base text-gray-900 shadow-xs ring-1 ring-inset ring-gray-300 outline-none placeholder:text-gray-500 focus:ring-2 focus:ring-brand-600"
-              />
+          <h1 className="mt-6 font-display text-[34px] font-medium leading-[1.04] text-ink min-[400px]:text-[40px] sm:text-6xl lg:text-[72px]">
+            Your neighbourhood pharmacist, <em className="font-normal text-brand-700">now on your phone.</em>
+          </h1>
+          <p className="mt-6 max-w-xl text-lg leading-relaxed text-gray-700">
+            Send a prescription or a list of what you need. A licensed pharmacist checks it, confirms the price, and we
+            bring it to your door — you only pay when it arrives.
+          </p>
+
+          <form
+            action="/drugs"
+            className="mt-8 flex max-w-xl items-center gap-2 rounded-full bg-white p-1.5 shadow-sm ring-1 ring-gray-200 focus-within:ring-2 focus-within:ring-brand-600"
+            role="search"
+          >
+            <SearchLg className="ml-3 size-5 shrink-0 text-gray-500" aria-hidden />
+            <label htmlFor="hero-q" className="sr-only">
+              Search medicines
             </label>
+            <input
+              id="hero-q"
+              name="q"
+              placeholder="Coartem, amlodipine, vitamin C…"
+              className="h-11 min-w-0 flex-1 bg-transparent text-base text-ink outline-none placeholder:text-gray-500"
+            />
             <button
               type="submit"
-              className="inline-flex h-12 items-center justify-center rounded-lg bg-brand-600 px-5 text-base font-semibold text-white shadow-xs hover:bg-brand-700 focus-visible:ring-focus outline-none"
+              className="h-11 shrink-0 rounded-full bg-brand-600 px-5 text-[15px] font-semibold text-white outline-none transition hover:bg-brand-700 focus-visible:ring-focus"
             >
               Search
             </button>
           </form>
-          <div className="mt-4 flex flex-wrap items-center gap-x-6 gap-y-3">
-            <ButtonLink href="/request" variant="link-color" iconLeading={File06}>
-              Upload a prescription
-            </ButtonLink>
-            <ButtonLink href="/consult" variant="link-gray" iconLeading={MessageChatCircle}>
-              Book a free consultation
-            </ButtonLink>
+
+          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-[15px]">
+            <Link
+              href="/request"
+              className="group inline-flex items-center gap-1.5 font-semibold text-ink underline decoration-gray-300 underline-offset-[6px] hover:decoration-ink"
+            >
+              Send a prescription <ArrowRight className="size-4 transition group-hover:translate-x-0.5" />
+            </Link>
+            <Link href="/consult" className="font-medium text-gray-700 underline decoration-gray-300 underline-offset-[6px] hover:text-ink hover:decoration-ink">
+              Ask a pharmacist, free
+            </Link>
           </div>
+
+          <dl className="mt-12 grid max-w-xl grid-cols-3 divide-x divide-gray-300 border-t border-gray-300 pt-6">
+            {[
+              ["PCN", "licensed premises"],
+              ["30 min", "typical reply"],
+              ["₦0", "to pay upfront"],
+            ].map(([k, v]) => (
+              <div key={k} className="px-3 first:pl-0 sm:px-4">
+                <dt className="font-display text-2xl font-medium text-ink sm:text-3xl">{k}</dt>
+                <dd className="mt-1 text-[13px] leading-snug text-gray-600">{v}</dd>
+              </div>
+            ))}
+          </dl>
         </div>
-        <HeroVisual />
+
+        <figure className="relative pb-6">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-[28px] bg-gray-200 sm:aspect-[5/4] lg:aspect-[4/5]">
+            <Image
+              src="/images/hero-lagos-pharmacy.webp"
+              alt="A pharmacist showing a customer a box of medicine in a Lagos pharmacy"
+              fill
+              priority
+              sizes="(min-width: 1024px) 560px, 100vw"
+              className="object-cover object-[62%_center]"
+            />
+          </div>
+          <figcaption className="absolute bottom-0 left-4 right-4 flex items-center gap-3 rounded-2xl bg-white/95 p-4 shadow-lg ring-1 ring-black/5 backdrop-blur sm:left-auto sm:right-6 sm:max-w-xs">
+            <span className="relative flex size-2.5 shrink-0" aria-hidden>
+              <span className="absolute inline-flex size-full animate-ping rounded-full bg-success-500 opacity-60" />
+              <span className="relative inline-flex size-2.5 rounded-full bg-success-500" />
+            </span>
+            <p className="text-sm leading-snug text-gray-700">
+              <span className="font-semibold text-ink">A pharmacist is on duty now.</span> Most requests are checked within
+              30 minutes.
+            </p>
+          </figcaption>
+        </figure>
       </div>
     </section>
   );
 }
 
-function HeroVisual() {
-  return (
-    <div className="relative mx-auto w-full max-w-lg lg:max-w-none" aria-hidden>
-      <div className="absolute -right-8 -top-8 size-72 rounded-full bg-brand-200/40 blur-3xl" />
-      <div className="relative rounded-2xl bg-white p-5 shadow-xl ring-1 ring-gray-200 sm:p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <p className="text-sm text-gray-600">Request</p>
-            <p className="text-lg font-semibold text-gray-900">RQ-1042</p>
-          </div>
-          <Badge color="warning" dot size="md">Quote ready</Badge>
-        </div>
-        <ul className="mt-5 divide-y divide-gray-200 rounded-xl ring-1 ring-gray-200">
-          {[
-            ["Coartem 80/480", "1 × pack", "₦8,500", true],
-            ["Amoxicillin 500mg", "2 × 20 caps", "₦6,400", true],
-            ["Vitamin C 1000mg", "1 × tube", "₦3,900", true],
-          ].map(([n, q, p]) => (
-            <li key={String(n)} className="flex items-center justify-between gap-4 px-4 py-3">
-              <div className="flex items-center gap-3">
-                <span className="flex size-8 items-center justify-center rounded-full bg-success-50 text-success-600">
-                  <CheckVerified02 className="size-4" />
-                </span>
-                <div>
-                  <p className="text-sm font-medium text-gray-900">{n}</p>
-                  <p className="text-xs text-gray-500">{q}</p>
-                </div>
-              </div>
-              <p className="text-sm font-semibold text-gray-900">{p}</p>
-            </li>
-          ))}
-        </ul>
-        <div className="mt-4 flex items-center justify-between">
-          <p className="text-sm text-gray-600">Total · pay on delivery</p>
-          <p className="text-xl font-semibold text-gray-900">₦18,800</p>
-        </div>
-        <div className="mt-4 h-11 rounded-lg bg-brand-600 text-center text-base font-semibold leading-[44px] text-white">Confirm quote</div>
-      </div>
-      <div className="relative -mt-6 ml-auto w-[85%] rounded-2xl bg-white p-4 shadow-lg ring-1 ring-gray-200 sm:-mr-6 lg:-mr-10">
-        <div className="flex items-start gap-3">
-          <Avatar name="Ada Okafor" size="md" online />
-          <div className="min-w-0">
-            <p className="text-sm font-semibold text-gray-700">
-              Pharm. Ada <span className="font-normal text-gray-500">· 2 min ago</span>
-            </p>
-            <p className="mt-1 rounded-lg rounded-tl-none bg-gray-50 px-3 py-2 text-sm text-gray-900 ring-1 ring-gray-200">
-              Take Coartem with a fatty meal or milk, twice daily for 3 days. Finish the full course even if you feel better. 💊
-            </p>
-          </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-function TrustBar() {
+function Services() {
   const items = [
-    { icon: ShieldTick, title: "Licensed pharmacists", text: site.pcnNotice },
-    { icon: Wallet02, title: "Pay on pickup or delivery", text: "No card needed online" },
-    { icon: Truck01, title: "Same-day delivery", text: "Across Lagos for orders before 3pm" },
-    { icon: CheckVerified02, title: "Genuine medicines", text: "NAFDAC-registered stock only" },
+    {
+      href: "/request",
+      img: "/images/patient-at-home.webp",
+      alt: "A woman at home ordering on her phone",
+      title: "Send what you need",
+      text: "Upload a prescription or type a list. We check every item, suggest safe alternatives and send you a quote.",
+      cta: "Start a request",
+      pos: "object-center",
+    },
+    {
+      href: "/consult",
+      img: "/images/pharmacist-portrait.webp",
+      alt: "A pharmacist in a white coat",
+      title: "Talk it through",
+      text: "Book a free, private 20-minute chat about side effects, interactions or what to take for a minor ailment.",
+      cta: "Book a chat",
+      pos: "object-[50%_25%]",
+    },
+    {
+      href: "/#how-it-works",
+      img: "/images/care-at-home.webp",
+      alt: "A carer going through medicines with an older man at home",
+      title: "Delivered, then paid",
+      text: "Same-day delivery across Lagos, or pick up in store. Pay by cash, transfer or POS when it reaches you.",
+      cta: "How delivery works",
+      pos: "object-center",
+    },
   ];
   return (
-    <section className="border-y border-gray-200 bg-white">
-      <div className="mx-auto grid max-w-7xl grid-cols-1 gap-6 px-4 py-8 sm:grid-cols-2 md:px-8 lg:grid-cols-4">
-        {items.map(({ icon: Icon, title, text }) => (
-          <div key={title} className="flex items-center gap-4">
-            <FeaturedIcon icon={Icon} theme="modern" size="lg" />
-            <div>
-              <p className="text-base font-semibold text-gray-900">{title}</p>
-              <p className="text-sm text-gray-600">{text}</p>
+    <section className="mx-auto w-full max-w-7xl px-4 pb-20 pt-24 md:px-8 md:pb-28 md:pt-32">
+      <SectionTitle kicker="What we do" title="Everything your local chemist does — without the queue." />
+      <div className="mt-12 grid gap-x-6 gap-y-12 md:grid-cols-3">
+        {items.map((s) => (
+          <Link key={s.title} href={s.href} className="group rounded-2xl outline-none focus-visible:ring-focus">
+            <div className="relative aspect-[4/3] overflow-hidden rounded-2xl bg-gray-200">
+              <Image
+                src={s.img}
+                alt={s.alt}
+                fill
+                sizes="(min-width: 768px) 33vw, 100vw"
+                className={`object-cover transition duration-500 group-hover:scale-[1.03] ${s.pos}`}
+              />
             </div>
-          </div>
+            <h3 className="mt-6 font-display text-2xl font-medium text-ink">{s.title}</h3>
+            <p className="mt-2 max-w-sm text-base leading-relaxed text-gray-600">{s.text}</p>
+            <span className="mt-4 inline-flex items-center gap-1 text-[15px] font-semibold text-brand-700">
+              {s.cta} <ArrowUpRight className="size-4 transition group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
+            </span>
+          </Link>
         ))}
       </div>
     </section>
   );
 }
 
-async function CategoryGrid() {
-  const categories = await getCategories();
+function HowItWorks() {
+  const steps = [
+    ["Tell us what you need", "Search our shelf, type in anything we don’t list, and attach a photo of your prescription if you have one."],
+    ["A pharmacist checks it", "We confirm what’s in stock, check doses and interactions, and send a quote. Nothing happens until you say yes."],
+    ["Pick up or get it delivered", "Collect from the counter or have it brought to you the same day. Pay when it arrives — cash, transfer or POS."],
+  ];
   return (
-    <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-5">
-      {categories.map((c) => {
-        const Icon = categoryIcon(c.slug);
-        return (
-          <Link
-            key={c.id}
-            href={`/drugs?category=${c.slug}`}
-            className="group flex flex-col gap-4 rounded-xl bg-white p-4 shadow-xs ring-1 ring-gray-200 outline-none transition hover:bg-gray-25 hover:ring-brand-300 focus-visible:ring-focus md:p-5"
-          >
-            <FeaturedIcon icon={Icon} size="md" />
-            <div>
-              <p className="text-sm font-semibold text-gray-900 md:text-base">{c.name}</p>
-              {c.description && <p className="mt-0.5 line-clamp-2 text-sm text-gray-600">{c.description}</p>}
-            </div>
-          </Link>
-        );
-      })}
-    </div>
-  );
-}
-
-function CategoryGridSkeleton() {
-  return (
-    <div className="mt-10 grid grid-cols-2 gap-3 sm:grid-cols-3 md:gap-4 lg:grid-cols-5">
-      {Array.from({ length: 10 }, (_, i) => (
-        <div key={i} className="h-36 animate-pulse rounded-xl bg-gray-50 ring-1 ring-gray-200" />
-      ))}
-    </div>
+    <section id="how-it-works" className="scroll-mt-28 bg-ink text-white">
+      <div className="mx-auto max-w-7xl px-4 py-20 md:px-8 md:py-28">
+        <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
+          <div>
+            <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-marigold-300">How it works</p>
+            <h2 className="mt-3 font-display text-4xl font-medium leading-[1.1] md:text-5xl">
+              A real pharmacist reads every request. <em className="font-normal text-gray-400">Not a bot.</em>
+            </h2>
+            <p className="mt-6 max-w-md text-lg leading-relaxed text-gray-300">
+              You get the judgement of a professional who knows Nigerian brands, prices and what’s actually available this week —
+              with the convenience of ordering from your phone.
+            </p>
+            <Link
+              href="/request"
+              className="mt-10 inline-flex h-12 items-center gap-2 rounded-full bg-white px-6 text-base font-semibold text-ink outline-none transition hover:bg-paper focus-visible:ring-focus"
+            >
+              Start a request <ArrowRight className="size-5" />
+            </Link>
+          </div>
+          <ol className="flex flex-col">
+            {steps.map(([title, text], i) => (
+              <li key={title} className="grid grid-cols-[56px_1fr] gap-4 border-t border-white/15 py-8 last:border-b sm:grid-cols-[80px_1fr]">
+                <span className="font-display text-4xl font-light text-marigold-300 sm:text-5xl">0{i + 1}</span>
+                <div>
+                  <h3 className="text-xl font-semibold">{title}</h3>
+                  <p className="mt-2 max-w-lg text-base leading-relaxed text-gray-300">{text}</p>
+                </div>
+              </li>
+            ))}
+          </ol>
+        </div>
+      </div>
+    </section>
   );
 }
 
 async function FeaturedDrugs() {
   const drugs = await getFeaturedDrugs(8);
   return (
-    <div className="mt-10 grid grid-cols-1 gap-4 min-[420px]:grid-cols-2 md:gap-6 lg:grid-cols-4">
+    <div className="mt-12 grid grid-cols-1 gap-x-6 gap-y-12 min-[460px]:grid-cols-2 lg:grid-cols-4 max-sm:[&>*:nth-child(n+5)]:hidden">
       {drugs.map((d) => (
         <DrugCard key={d.id} drug={d} />
       ))}
@@ -264,104 +262,83 @@ async function FeaturedDrugs() {
   );
 }
 
-function HowItWorks() {
-  const steps = [
-    {
-      icon: ShoppingBag03,
-      title: "Build your request",
-      text: "Add medicines from our catalogue or type in anything you need. Upload a prescription for Rx-only items.",
-    },
-    {
-      icon: CheckVerified02,
-      title: "A pharmacist reviews it",
-      text: "We check your prescription, confirm what’s in stock, suggest safe alternatives and send you a quote.",
-    },
-    {
-      icon: Truck01,
-      title: "Pick up or get it delivered",
-      text: "Confirm the quote and choose pickup or delivery. Pay with cash, transfer or POS when it gets to you.",
-    },
-  ];
+function Categories() {
   return (
-    <section id="how-it-works" className="scroll-mt-24 bg-gray-50">
-      <div className="mx-auto max-w-7xl px-4 py-16 md:px-8 md:py-24">
-        <div className="mx-auto max-w-3xl text-center">
-          <p className="text-sm font-semibold text-brand-700 md:text-base">How it works</p>
-          <h2 className="mt-3 text-display-sm font-semibold text-gray-900 md:text-display-md">Three steps. No queues.</h2>
-          <p className="mt-4 text-lg text-gray-600 md:text-xl">
-            The care of your neighbourhood pharmacist, with the convenience of ordering from your phone.
-          </p>
-        </div>
-        <ol className="mt-12 grid gap-8 md:mt-16 md:grid-cols-3">
-          {steps.map(({ icon: Icon, title, text }, i) => (
-            <li key={title} className="relative flex flex-col items-center text-center">
-              <FeaturedIcon icon={Icon} size="lg" />
-              <span className="mt-5 text-sm font-semibold text-brand-700">Step {i + 1}</span>
-              <h3 className="mt-1 text-xl font-semibold text-gray-900">{title}</h3>
-              <p className="mt-2 max-w-sm text-base text-gray-600">{text}</p>
-            </li>
-          ))}
-        </ol>
-        <div className="mt-12 flex justify-center">
-          <ButtonLink href="/request" size="xl" iconTrailing={ArrowRight}>
-            Start a request
-          </ButtonLink>
-        </div>
+    <section className="bg-paper">
+      <div className="mx-auto max-w-7xl px-4 py-20 md:px-8 md:py-28">
+        <SectionTitle kicker="Browse the shelf" title="Find it by what it’s for" />
+        <Suspense fallback={<div className="mt-12 h-80 animate-pulse rounded-2xl bg-paper-2" />}>
+          <CategoryDirectory />
+        </Suspense>
       </div>
     </section>
   );
 }
 
-function ConsultBand() {
-  const points = [
-    "Medication questions, side effects and interactions",
-    "Advice on minor ailments and what to take",
-    "Help understanding your prescription",
-    "Free — no payment needed to book",
-  ];
+async function CategoryDirectory() {
+  const categories = await getCategoriesWithCounts();
   return (
-    <section className="bg-brand-950">
-      <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 py-16 md:px-8 md:py-24 lg:grid-cols-2">
+    <ul className="mt-12 grid border-t border-gray-300 sm:grid-cols-2 lg:grid-cols-3">
+      {categories.map((c) => (
+        <li key={c.id} className="border-b border-gray-300">
+          <Link
+            href={`/drugs?category=${c.slug}`}
+            className="group flex h-full items-center justify-between gap-4 py-6 outline-none focus-visible:bg-paper-2 sm:px-5"
+          >
+            <span>
+              <span className="block font-display text-xl font-medium text-ink group-hover:underline group-hover:underline-offset-4">{c.name}</span>
+              {c.description && <span className="mt-1 block text-sm text-gray-600">{c.description}</span>}
+            </span>
+            <span className="flex shrink-0 items-center gap-2 text-sm tabular-nums text-gray-500">
+              {c.count}
+              <ArrowRight className="size-4 text-gray-400 transition group-hover:translate-x-0.5 group-hover:text-ink" />
+            </span>
+          </Link>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function Pharmacist() {
+  const p = site.superintendent;
+  return (
+    <section className="mx-auto w-full max-w-7xl px-4 py-20 md:px-8 md:py-28">
+      <div className="grid items-center gap-12 lg:grid-cols-2 lg:gap-20">
+        <div className="relative aspect-[4/5] overflow-hidden rounded-[28px] bg-gray-200 lg:order-last">
+          <Image
+            src="/images/pharmacist-portrait-2.webp"
+            alt={`${p.name}, ${p.title}`}
+            fill
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            className="object-cover object-top"
+          />
+        </div>
         <div>
-          <p className="text-sm font-semibold text-brand-300 md:text-base">Online consultations</p>
-          <h2 className="mt-3 text-display-sm font-semibold text-white md:text-display-md">Talk to a pharmacist, privately.</h2>
-          <p className="mt-4 text-lg text-brand-100 md:text-xl">
-            Pick a time that suits you and chat one-on-one with a licensed pharmacist from your phone or laptop.
-          </p>
-          <ul className="mt-8 flex flex-col gap-4">
-            {points.map((p) => (
-              <li key={p} className="flex items-start gap-3 text-base text-brand-50">
-                <CheckVerified02 className="mt-0.5 size-6 shrink-0 text-brand-300" />
-                {p}
+          <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-brand-700">The people behind the counter</p>
+          <blockquote className="mt-6 font-display text-3xl font-normal leading-[1.25] text-ink md:text-[40px]">“{p.quote}”</blockquote>
+          <div className="mt-8 flex items-center gap-4">
+            <span className="h-px w-10 bg-gray-400" aria-hidden />
+            <div>
+              <p className="font-semibold text-ink">{p.name}</p>
+              <p className="text-sm text-gray-600">
+                {p.title} · {p.registration}
+              </p>
+            </div>
+          </div>
+          <ul className="mt-12 grid gap-6 border-t border-gray-200 pt-8 sm:grid-cols-2">
+            {[
+              ["Genuine stock only", "Every product is NAFDAC-registered and bought from licensed distributors."],
+              ["Prescriptions checked", "Prescription-only medicines are dispensed against a valid prescription — always."],
+              ["Private by default", "Only our pharmacists see your requests, prescriptions and chats."],
+              ["Here when you need us", `${site.storeHours}. In an emergency, call 112.`],
+            ].map(([t, d]) => (
+              <li key={t}>
+                <p className="font-semibold text-ink">{t}</p>
+                <p className="mt-1 text-sm leading-relaxed text-gray-600">{d}</p>
               </li>
             ))}
           </ul>
-          <div className="mt-10 flex flex-wrap gap-3">
-            <ButtonLink href="/consult" size="xl" iconLeading={CalendarCheck01} className="bg-white text-brand-800 hover:bg-brand-50">
-              Book a consultation
-            </ButtonLink>
-          </div>
-        </div>
-        <div className="rounded-2xl bg-white/5 p-4 ring-1 ring-white/10 sm:p-6" aria-hidden>
-          <div className="rounded-xl bg-white p-5 shadow-xl">
-            <p className="text-sm font-semibold text-gray-900">Choose a time</p>
-            <p className="text-sm text-gray-600">20-minute chat · Africa/Lagos</p>
-            <div className="mt-4 grid grid-cols-5 gap-2">
-              {["Mon 10", "Tue 11", "Wed 12", "Thu 13", "Fri 14"].map((d, i) => (
-                <div key={d} className={`rounded-lg px-2 py-2 text-center text-xs font-semibold ring-1 ${i === 1 ? "bg-brand-600 text-white ring-brand-600" : "text-gray-700 ring-gray-200"}`}>
-                  {d.split(" ")[0]}
-                  <span className="block text-base">{d.split(" ")[1]}</span>
-                </div>
-              ))}
-            </div>
-            <div className="mt-4 grid grid-cols-3 gap-2">
-              {["9:00", "9:20", "9:40", "10:00", "10:20", "11:40"].map((t, i) => (
-                <div key={t} className={`rounded-lg py-2 text-center text-sm font-semibold ring-1 ${i === 3 ? "bg-brand-50 text-brand-700 ring-brand-300" : i === 1 ? "text-gray-300 line-through ring-gray-100" : "text-gray-700 ring-gray-200"}`}>
-                  {t}
-                </div>
-              ))}
-            </div>
-          </div>
         </div>
       </div>
     </section>
@@ -371,45 +348,82 @@ function ConsultBand() {
 function Faq() {
   const faqs = [
     ["Do I need to pay online?", "No. Once a pharmacist confirms your quote, you pay on pickup or on delivery — cash, transfer or POS."],
-    ["What if a medicine isn’t in your catalogue?", "Type it into your request list. Our pharmacists will source it or recommend a safe, equivalent alternative."],
-    ["Which medicines need a prescription?", "Prescription-only medicines (marked Rx) such as antibiotics and blood pressure drugs need a valid prescription from a licensed prescriber. Upload a clear photo or PDF with your request."],
-    ["How long does review take?", "Most requests are reviewed within 30 minutes during opening hours. You’ll see live status updates in your account."],
+    ["What if a medicine isn’t on your site?", "Type it into your list anyway. We’ll source it, or recommend a safe equivalent and explain the difference."],
+    [
+      "Which medicines need a prescription?",
+      "Prescription-only medicines such as antibiotics and most blood-pressure and diabetes treatments. Upload a clear photo or PDF with your request and we’ll verify it.",
+    ],
+    ["How quickly will I hear back?", "Most requests are reviewed within 30 minutes during opening hours. Your request page updates live, and we may call to clarify."],
     ["Is my consultation private?", "Yes. Only you and our pharmacists can see your chat. We never share your health information."],
   ];
   return (
-    <section className="mx-auto w-full max-w-3xl px-4 py-16 md:px-8 md:py-24">
-      <div className="text-center">
-        <h2 className="text-display-sm font-semibold text-gray-900 md:text-display-md">Frequently asked questions</h2>
-        <p className="mt-4 text-lg text-gray-600 md:text-xl">Everything you need to know about ordering and consultations.</p>
-      </div>
-      <div className="mt-12 divide-y divide-gray-200">
-        {faqs.map(([q, a]) => (
-          <details key={q} className="group py-6 first:pt-0">
-            <summary className="flex cursor-pointer list-none items-start justify-between gap-6 text-lg font-medium text-gray-900 [&::-webkit-details-marker]:hidden">
-              {q}
-              <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full ring-2 ring-gray-400 text-gray-400 transition group-open:rotate-180">
-                <ChevronDown className="size-4" />
-              </span>
-            </summary>
-            <p className="mt-2 pr-12 text-base text-gray-600">{a}</p>
-          </details>
-        ))}
+    <section className="border-t border-gray-200">
+      <div className="mx-auto grid max-w-7xl gap-12 px-4 py-20 md:px-8 md:py-28 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+        <div>
+          <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-brand-700">Questions</p>
+          <h2 className="mt-3 font-display text-4xl font-medium leading-[1.1] text-ink md:text-5xl">Before you order</h2>
+          <p className="mt-6 max-w-sm text-base leading-relaxed text-gray-600">
+            Can’t find your answer? Call us on{" "}
+            <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="font-semibold text-ink underline underline-offset-4">
+              {site.phone}
+            </a>{" "}
+            or{" "}
+            <Link href="/consult" className="font-semibold text-ink underline underline-offset-4">
+              book a free chat
+            </Link>
+            .
+          </p>
+        </div>
+        <div className="divide-y divide-gray-200 border-y border-gray-200">
+          {faqs.map(([q, a]) => (
+            <details key={q} className="group py-6">
+              <summary className="flex cursor-pointer list-none items-start justify-between gap-6 text-lg font-semibold text-ink [&::-webkit-details-marker]:hidden">
+                {q}
+                <span className="relative mt-1.5 size-4 shrink-0" aria-hidden>
+                  <span className="absolute left-0 top-1/2 h-0.5 w-4 -translate-y-1/2 bg-ink" />
+                  <span className="absolute left-1/2 top-0 h-4 w-0.5 -translate-x-1/2 bg-ink transition group-open:rotate-90 group-open:opacity-0" />
+                </span>
+              </summary>
+              <p className="mt-3 max-w-2xl pr-10 text-base leading-relaxed text-gray-600">{a}</p>
+            </details>
+          ))}
+        </div>
       </div>
     </section>
   );
 }
 
-function CtaBand() {
+function ClosingCta() {
   return (
-    <section className="mx-auto w-full max-w-7xl px-4 pb-16 md:px-8 md:pb-24">
-      <div className="flex flex-col gap-8 rounded-2xl bg-gray-50 px-6 py-10 md:flex-row md:items-center md:justify-between md:p-16">
-        <div>
-          <h2 className="text-display-xs font-semibold text-gray-900 md:text-display-sm">Got a prescription to fill?</h2>
-          <p className="mt-3 text-lg text-gray-600 md:text-xl">Snap it, upload it, and we’ll handle the rest.</p>
-        </div>
-        <div className="flex flex-col gap-3 sm:flex-row">
-          <ButtonLink href="/consult" variant="secondary" size="xl">Ask a pharmacist</ButtonLink>
-          <ButtonLink href="/request" size="xl">Upload prescription</ButtonLink>
+    <section className="px-4 pb-20 md:px-8 md:pb-28">
+      <div className="relative mx-auto max-w-7xl overflow-hidden rounded-[28px] bg-brand-700">
+        <div className="grid lg:grid-cols-2">
+          <div className="relative z-10 px-6 py-14 sm:px-12 md:py-20">
+            <h2 className="font-display text-4xl font-medium leading-[1.1] text-white md:text-5xl">
+              Got a prescription? <em className="font-normal text-brand-200">Send it in two minutes.</em>
+            </h2>
+            <p className="mt-5 max-w-md text-lg leading-relaxed text-brand-100">Snap a photo, add anything else you need, and we’ll take it from there.</p>
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/request"
+                className="inline-flex h-12 items-center justify-center gap-2 rounded-full bg-white px-6 text-base font-semibold text-ink outline-none transition hover:bg-paper focus-visible:ring-focus"
+              >
+                Send a prescription <ArrowRight className="size-5" />
+              </Link>
+              <ButtonLink
+                href="/consult"
+                size="xl"
+                variant="tertiary"
+                className="rounded-full px-6 text-white ring-1 ring-inset ring-white/40 hover:bg-white/10 hover:text-white"
+              >
+                Ask a pharmacist first
+              </ButtonLink>
+            </div>
+          </div>
+          <div className="relative hidden min-h-[360px] lg:block">
+            <Image src="/images/prescription-bottles.webp" alt="" fill sizes="50vw" className="object-cover object-[50%_30%]" />
+            <div className="absolute inset-0 bg-gradient-to-r from-brand-700 via-brand-700/10 to-transparent" />
+          </div>
         </div>
       </div>
     </section>

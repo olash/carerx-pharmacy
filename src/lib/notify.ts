@@ -102,13 +102,13 @@ export function reminderContent(item: {
     item.audience === "patient"
       ? `This is a reminder that your private chat with ${esc(withWhom)} is on <b>${esc(when)}</b>.`
       : `${esc(withWhom)} has a consultation on <b>${esc(when)}</b> about “${esc(item.topic)}”.`;
-  const html = `<!doctype html><html><body style="margin:0;background:#f9fafb;font-family:Inter,Arial,sans-serif;color:#101828">
+  const html = `<!doctype html><html><body style="margin:0;background:#f8f5ef;font-family:Inter,Arial,sans-serif;color:#1c1917">
   <table width="100%" cellpadding="0" cellspacing="0" style="padding:32px 16px"><tr><td align="center">
   <table width="100%" cellpadding="0" cellspacing="0" style="max-width:520px;background:#fff;border:1px solid #eaecf0;border-radius:12px;padding:32px">
-    <tr><td style="font-size:18px;font-weight:600;color:#0e9384">${esc(site.name)}</td></tr>
+    <tr><td style="font-size:18px;font-weight:600;color:#1f5c3e">${esc(site.name)}</td></tr>
     <tr><td style="padding-top:24px;font-size:16px">Hi ${esc(name)},</td></tr>
     <tr><td style="padding-top:12px;font-size:16px;line-height:24px;color:#475467">${lead}</td></tr>
-    <tr><td style="padding-top:24px"><a href="${link}" style="display:inline-block;background:#0e9384;color:#fff;text-decoration:none;font-weight:600;padding:12px 20px;border-radius:8px">${item.audience === "patient" ? "Open your chat" : "Open consultation"}</a></td></tr>
+    <tr><td style="padding-top:24px"><a href="${link}" style="display:inline-block;background:#1f5c3e;color:#fff;text-decoration:none;font-weight:600;padding:12px 20px;border-radius:8px">${item.audience === "patient" ? "Open your chat" : "Open consultation"}</a></td></tr>
     <tr><td style="padding-top:24px;font-size:13px;color:#667085">${esc(site.address)} · ${esc(site.phone)}</td></tr>
   </table></td></tr></table></body></html>`;
   const text = `Hi ${name},\n\n${lead.replace(/<[^>]+>/g, "")}\n\nOpen: ${link}\n\n${site.name}`;

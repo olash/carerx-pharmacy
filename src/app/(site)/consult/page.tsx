@@ -1,13 +1,11 @@
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { connection } from "next/server";
-import { MessageChatCircle, ShieldTick, Clock } from "@untitledui/icons";
 import { createClient } from "@/lib/supabase/server";
 import { getSessionUser } from "@/lib/auth";
 import { generateSlots } from "@/lib/slots";
 import { BookingForm } from "@/components/consult/booking-form";
 import { Skeleton } from "@/components/ui/skeleton";
-import { FeaturedIcon } from "@/components/ui/featured-icon";
 
 export const metadata: Metadata = { title: "Talk to a pharmacist" };
 
@@ -15,16 +13,18 @@ export default function ConsultPage() {
   return (
     <div className="mx-auto w-full max-w-7xl px-4 py-8 md:px-8 md:py-12">
       <div className="max-w-3xl">
-        <p className="text-sm font-semibold text-brand-700">Free online consultation</p>
-        <h1 className="mt-2 text-display-xs font-semibold text-gray-900 md:text-display-sm">Talk to a pharmacist</h1>
+        <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-brand-700">Free · private · 20 minutes</p>
+        <h1 className="mt-2 font-display text-4xl font-medium leading-tight text-ink md:text-5xl">Talk to a pharmacist</h1>
         <p className="mt-2 text-base text-gray-600 md:text-lg">
           Book a private one-on-one chat with a licensed pharmacist about your medicines, side effects or minor ailments.
         </p>
       </div>
-      <ul className="mt-6 flex flex-wrap gap-x-8 gap-y-3 text-sm text-gray-700">
-        <li className="flex items-center gap-2"><FeaturedIcon icon={MessageChatCircle} size="sm" /> Live text chat, share photos</li>
-        <li className="flex items-center gap-2"><FeaturedIcon icon={ShieldTick} size="sm" /> Private & confidential</li>
-        <li className="flex items-center gap-2"><FeaturedIcon icon={Clock} size="sm" /> Same-day slots</li>
+      <ul className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-[15px] text-gray-700">
+        {["Live chat — share photos of packs or prescriptions", "Only pharmacists can see it", "Same-day slots"].map((t) => (
+          <li key={t} className="flex items-center gap-2">
+            <span className="size-1.5 rounded-full bg-brand-600" aria-hidden /> {t}
+          </li>
+        ))}
       </ul>
       <div className="mt-8">
         <Suspense fallback={<Skeleton className="h-[520px] w-full rounded-xl" />}>

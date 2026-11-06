@@ -91,7 +91,7 @@ export function RequestDrawer() {
       <aside className="absolute inset-y-0 right-0 flex w-full max-w-md animate-slide-in-right flex-col bg-white shadow-xl">
         <div className="flex items-start justify-between gap-4 border-b border-gray-200 px-4 py-5 sm:px-6">
           <div>
-            <h2 id="request-drawer-title" className="text-lg font-semibold text-gray-900">
+            <h2 id="request-drawer-title" className="font-display text-2xl font-medium text-ink">
               Your request list
             </h2>
             <p className="mt-1 text-sm text-gray-600">

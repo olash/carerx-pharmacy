@@ -94,3 +94,15 @@ export async function getRelatedDrugs(drug: Drug, limit = 4) {
     .limit(limit);
   return (data ?? []) as DrugWithCategory[];
 }
+
+export async function getCategoriesWithCounts() {
+  await connection();
+  const supabase = createPublicClient();
+  const { data, error } = await supabase
+    .from("categories")
+    .select("id, name, slug, description, drugs(count)")
+    .order("sort_order")
+    .order("name");
+  if (error) throw error;
+  return data.map(({ drugs, ...c }) => ({ ...c, count: (drugs as unknown as { count: number }[])[0]?.count ?? 0 }));
+}

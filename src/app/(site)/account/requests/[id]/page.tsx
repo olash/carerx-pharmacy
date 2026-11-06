@@ -79,7 +79,7 @@ async function RequestDetail({
       <div className="mt-6 flex flex-col gap-4 md:flex-row md:items-start md:justify-between">
         <div>
           <div className="flex flex-wrap items-center gap-3">
-            <h1 className="text-display-xs font-semibold text-gray-900">{request.ref}</h1>
+            <h1 className="font-display text-4xl font-medium leading-tight text-ink">{request.ref}</h1>
             <RequestStatusBadge status={request.status} />
           </div>
           <p className="mt-1 text-base text-gray-600">Sent {formatDateTime(request.created_at)}</p>

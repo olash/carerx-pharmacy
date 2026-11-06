@@ -9,8 +9,8 @@ export const metadata: Metadata = { title: "Staff sign in" };
 
 export default function AdminLoginPage() {
   return (
-    <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-gray-50 px-4 py-12">
-      <svg className="pointer-events-none absolute left-1/2 top-0 size-[768px] -translate-x-1/2 -translate-y-1/3 text-gray-200" viewBox="0 0 768 768" fill="none" aria-hidden>
+    <div className="relative flex min-h-dvh flex-col items-center justify-center overflow-hidden bg-paper px-4 py-12">
+      <svg className="pointer-events-none absolute left-1/2 top-0 size-[768px] -translate-x-1/2 -translate-y-1/3 text-gray-300/70" viewBox="0 0 768 768" fill="none" aria-hidden>
         {[96, 160, 224, 288, 352].map((r, i) => (
           <circle key={r} cx="384" cy="384" r={r} stroke="currentColor" strokeOpacity={1 - i * 0.18} />
         ))}
