@@ -3,7 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { ChevronRight, File06, Mail01, Phone, Truck01, Building07, LinkExternal01 } from "@untitledui/icons";
+import { ChevronRight, File06, Mail01, Phone, Truck01, LinkExternal01 } from "@untitledui/icons";
 import { createClient } from "@/lib/supabase/server";
 import { getStaffNames } from "@/lib/data/consultations";
 import { PageHeader } from "@/components/ui/page-header";
@@ -121,10 +121,10 @@ async function Detail({ params }: { params: Promise<{ id: string }> }) {
           </Card>
 
           <Card className="p-4 sm:p-6">
-            <h2 className="text-sm font-semibold text-gray-900">{r.fulfilment === "delivery" ? "Delivery" : "Pickup"}</h2>
+            <h2 className="text-sm font-semibold text-gray-900">Deliver to</h2>
             <div className="mt-3 flex gap-2 text-sm text-gray-600">
-              {r.fulfilment === "delivery" ? <Truck01 className="size-5 shrink-0 text-gray-400" /> : <Building07 className="size-5 shrink-0 text-gray-400" />}
-              <p className="whitespace-pre-wrap">{r.fulfilment === "delivery" ? r.delivery_address : "Patient will collect in store."}</p>
+              <Truck01 className="size-5 shrink-0 text-gray-400" />
+              <p className="whitespace-pre-wrap">{r.delivery_address ?? "No address — call the patient."}</p>
             </div>
             {r.patient_note && (
               <div className="mt-4 rounded-lg bg-warning-25 p-3 text-sm ring-1 ring-inset ring-warning-200">

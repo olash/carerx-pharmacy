@@ -93,7 +93,7 @@ async function DrugDetail({ params }: { params: Promise<{ slug: string }> }) {
           </div>
 
           <ul className="mt-8 grid gap-4 rounded-2xl bg-paper p-5 text-sm text-gray-700 sm:grid-cols-3">
-            <li className="flex items-center gap-2"><Wallet02 className="size-5 text-gray-400" /> Pay on pickup/delivery</li>
+            <li className="flex items-center gap-2"><Wallet02 className="size-5 text-gray-400" /> Pay on delivery</li>
             <li className="flex items-center gap-2"><Truck01 className="size-5 text-gray-400" /> Same-day in Lagos</li>
             <li className="flex items-center gap-2"><ShieldTick className="size-5 text-gray-400" /> Pharmacist-checked</li>
           </ul>

@@ -1,6 +1,6 @@
 # CareRx Pharmacy
 
-An online pharmacy for Nigeria. Patients send **drug requests** (with prescription uploads) and book **live chat consultations** with a pharmacist. Staff manage everything from an **admin CMS**: inventory, quotes, fulfilment, consultations, opening hours and the team.
+An **online-only, delivery-only** pharmacy for Nigeria (no walk-in shop, no pickup). Patients send **drug requests** (with prescription uploads) and book **live chat consultations** with a pharmacist; every order is delivered and paid for on arrival. Staff manage everything from an **admin CMS**: inventory, quotes, fulfilment, consultations, opening hours and the team.
 
 **Stack:** Next.js 16 (App Router, Cache Components) · Tailwind CSS v4 with **Untitled UI** design tokens and `@untitledui/icons` · Supabase (Postgres, Auth, Storage, Realtime) · deployable on Vercel.
 
@@ -14,12 +14,14 @@ An online pharmacy for Nigeria. Patients send **drug requests** (with prescripti
 
 ### Photo credits
 Photos are from [Pexels](https://www.pexels.com/license/) (free for commercial use; attribution not required) and are self-hosted in `public/images/`:
-[hero / sign-in](https://www.pexels.com/photo/30678215/) ·
-[pharmacist portrait](https://www.pexels.com/photo/19218034/) ·
+[hero — parcels at home](https://www.pexels.com/photo/6868622/) ·
+[ordering at home](https://www.pexels.com/photo/5711715/) ·
+[pharmacist video consult](https://www.pexels.com/photo/19957215/) ·
+[door delivery](https://www.pexels.com/photo/6994276/) ·
+[sign-in — courier handover](https://www.pexels.com/photo/6869055/) ·
 [superintendent portrait](https://www.pexels.com/photo/3714743/) ·
-[patient at home](https://www.pexels.com/photo/5938231/) ·
-[care at home](https://www.pexels.com/photo/7551652/) ·
 [prescription bottles](https://www.pexels.com/photo/15307047/).
+Spot illustrations (how it works, empty states) are drawn in code: `src/components/illustrations.tsx`.
 Replace them with photos of your own team and store when you can — it's the single biggest trust signal.
 
 ---
@@ -33,7 +35,7 @@ Replace them with photos of your own team and store when you can — it's the si
 | `/drugs` | Catalogue with search, category, in-stock and Rx/OTC filters |
 | `/drugs/[slug]` | Medicine detail: price, stock, Rx notice, usage |
 | Request list (drawer) | Cart-like list saved on the device; add unlisted medicines by name |
-| `/request` | Review the list, upload a prescription (required for Rx items), choose pickup or delivery, add a note |
+| `/request` | Review the list, upload a prescription (required for Rx items), add a delivery address and a note |
 | `/consult` | Book a slot (generated from opening hours; taken slots hidden) |
 | `/account` | My requests and consultations |
 | `/account/requests/[id]` | Live status tracker, quote review, **Confirm quote** / Cancel, timeline |
@@ -69,7 +71,7 @@ Replace them with photos of your own team and store when you can — it's the si
   `Hi {{1}}, this is a reminder of your consultation with {{2}} on {{3}}. Join here: {{4}}`
 
 ### Request lifecycle
-`submitted → reviewing → quoted → confirmed → ready → (out_for_delivery) → completed`, plus `cancelled` (by the patient) and `rejected` (by the pharmacist, with a reason). Patients **pay on pickup or delivery**; no payment gateway is needed. Stock is **deducted automatically** when a request is completed.
+`submitted → reviewing → quoted → confirmed → ready (packed) → out_for_delivery → completed (delivered & paid)`, plus `cancelled` (by the patient) and `rejected` (by the pharmacist, with a reason). Patients **pay on delivery**; no payment gateway is needed. Pickup is disabled in the database (migration 5). Stock is **deducted automatically** when a request is completed.
 
 ### Security
 - Row Level Security on every table: patients only see their own data, and staff see everything.

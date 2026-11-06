@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { IlloChat, IlloEmptyBag } from "@/components/illustrations";
 import { Suspense } from "react";
 import type { Metadata } from "next";
 import { CalendarCheck01, ChevronRight, File06, MessageChatCircle, Plus } from "@untitledui/icons";
@@ -94,7 +95,7 @@ async function Account({ searchParams }: { searchParams: PageProps<"/account">["
                           {r.ref} <RequestStatusBadge status={r.status} />
                         </p>
                         <p className="mt-0.5 text-sm text-gray-600">
-                          {count} {count === 1 ? "item" : "items"} · {r.fulfilment === "delivery" ? "Delivery" : "Pickup"} · {formatDate(r.created_at)}
+                          {count} {count === 1 ? "item" : "items"} · {formatDate(r.created_at)}
                         </p>
                       </div>
                       <ChevronRight className="size-5 text-gray-400" />
@@ -105,7 +106,7 @@ async function Account({ searchParams }: { searchParams: PageProps<"/account">["
             </ul>
           ) : (
             <EmptyState
-              icon={File06}
+              illustration={<IlloEmptyBag />}
               title="No requests yet"
               description="Add medicines to your list and send a request — we’ll confirm availability and price."
               actions={<ButtonLink href="/drugs" iconLeading={Plus}>Browse medicines</ButtonLink>}
@@ -134,7 +135,7 @@ async function Account({ searchParams }: { searchParams: PageProps<"/account">["
           </ul>
         ) : (
           <EmptyState
-            icon={MessageChatCircle}
+            illustration={<IlloChat />}
             title="No consultations yet"
             description="Book a free, private chat with a licensed pharmacist."
             actions={<ButtonLink href="/consult" iconLeading={CalendarCheck01}>Book consultation</ButtonLink>}

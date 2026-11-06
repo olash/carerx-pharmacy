@@ -1,6 +1,6 @@
 "use client";
 
-/* eslint-disable @next/next/no-img-element */
+ 
 import Link from "next/link";
 import { useActionState, useState, type ReactNode } from "react";
 import { useRouter } from "next/navigation";

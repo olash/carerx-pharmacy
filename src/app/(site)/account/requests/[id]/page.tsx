@@ -2,7 +2,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import type { Metadata } from "next";
-import { ArrowLeft, Building07, File06, MessageChatCircle, Phone, Truck01 } from "@untitledui/icons";
+import { ArrowLeft, File06, MessageChatCircle, Phone, Truck01 } from "@untitledui/icons";
 import { requireProfile } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { requestTotals } from "@/lib/requests";
@@ -17,7 +17,6 @@ import { RequestTimeline } from "@/components/requests/request-timeline";
 import { PatientRequestActions } from "@/components/requests/patient-request-actions";
 import { LiveRefresh } from "@/components/live-refresh";
 import { formatDateTime, formatNaira } from "@/lib/utils";
-import { site } from "@/lib/config";
 
 export const metadata: Metadata = { title: "Request" };
 
@@ -136,20 +135,18 @@ async function RequestDetail({
           {showPrices && (
             <dl className="flex flex-col gap-2 border-t border-gray-200 px-4 py-4 text-sm sm:px-6">
               <div className="flex justify-between"><dt className="text-gray-600">Subtotal</dt><dd className="font-medium text-gray-900">{formatNaira(totals.subtotal)}</dd></div>
-              {request.fulfilment === "delivery" && (
-                <div className="flex justify-between"><dt className="text-gray-600">Delivery</dt><dd className="font-medium text-gray-900">{formatNaira(totals.delivery)}</dd></div>
-              )}
-              <div className="flex justify-between pt-2 text-base"><dt className="font-semibold text-gray-900">Total · pay on {request.fulfilment}</dt><dd className="font-semibold text-gray-900">{formatNaira(totals.total)}</dd></div>
+              <div className="flex justify-between"><dt className="text-gray-600">Delivery</dt><dd className="font-medium text-gray-900">{formatNaira(totals.delivery)}</dd></div>
+              <div className="flex justify-between pt-2 text-base"><dt className="font-semibold text-gray-900">Total · pay on delivery</dt><dd className="font-semibold text-gray-900">{formatNaira(totals.total)}</dd></div>
             </dl>
           )}
         </Card>
 
         <div className="flex flex-col gap-6">
           <Card className="p-4 sm:p-6">
-            <h2 className="text-sm font-semibold text-gray-900">{request.fulfilment === "delivery" ? "Delivery" : "Pickup"}</h2>
+            <h2 className="text-sm font-semibold text-gray-900">Delivery</h2>
             <div className="mt-3 flex gap-3 text-sm text-gray-600">
-              {request.fulfilment === "delivery" ? <Truck01 className="size-5 shrink-0 text-gray-400" /> : <Building07 className="size-5 shrink-0 text-gray-400" />}
-              <p className="whitespace-pre-wrap">{request.fulfilment === "delivery" ? request.delivery_address : site.address}</p>
+              <Truck01 className="size-5 shrink-0 text-gray-400" />
+              <p className="whitespace-pre-wrap">{request.delivery_address ?? "No address on file — we’ll call you."}</p>
             </div>
             <div className="mt-3 flex gap-3 text-sm text-gray-600">
               <Phone className="size-5 shrink-0 text-gray-400" /> {request.contact_phone}

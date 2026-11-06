@@ -9,6 +9,7 @@ const messages: Record<string, string> = {
   DRUG_NOT_FOUND: "One of the medicines is no longer available. Remove it and try again.",
   ITEM_NAME_REQUIRED: "Every item needs a name.",
   PRESCRIPTION_REQUIRED: "Some items need a prescription. Please upload a photo or PDF of it.",
+  DELIVERY_ONLY: "We deliver every order — please add a delivery address.",
   TOPIC_REQUIRED: "Tell us what you’d like to discuss.",
   SLOT_UNAVAILABLE: "That time isn’t available any more. Please pick another slot.",
   SLOT_TAKEN: "Someone just booked that slot. Please pick another time.",

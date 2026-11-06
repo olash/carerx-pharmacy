@@ -3,14 +3,14 @@ import type { Fulfilment, RequestStatus } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 /** Untitled "progress steps" (horizontal, icons with connectors). */
-export function RequestProgress({ status, fulfilment }: { status: RequestStatus; fulfilment: Fulfilment }) {
+export function RequestProgress({ status }: { status: RequestStatus; fulfilment?: Fulfilment }) {
   const steps: { key: RequestStatus[]; label: string }[] = [
     { key: ["submitted"], label: "Submitted" },
     { key: ["reviewing"], label: "Pharmacist review" },
     { key: ["quoted"], label: "Confirm quote" },
-    { key: ["confirmed"], label: "Preparing" },
-    { key: fulfilment === "delivery" ? ["ready", "out_for_delivery"] : ["ready"], label: fulfilment === "delivery" ? "On the way" : "Ready for pickup" },
-    { key: ["completed"], label: "Completed" },
+    { key: ["confirmed", "ready"], label: "Packing" },
+    { key: ["out_for_delivery"], label: "On the way" },
+    { key: ["completed"], label: "Delivered" },
   ];
   const order: RequestStatus[] = ["submitted", "reviewing", "quoted", "confirmed", "ready", "out_for_delivery", "completed"];
   const pos = order.indexOf(status);

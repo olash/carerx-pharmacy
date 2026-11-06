@@ -11,7 +11,7 @@ const transitions: Record<RequestStatus, RequestStatus[]> = {
   reviewing: ["quoted", "rejected", "cancelled"],
   quoted: ["confirmed", "reviewing", "quoted", "rejected", "cancelled"],
   confirmed: ["ready", "cancelled"],
-  ready: ["out_for_delivery", "completed", "cancelled"],
+  ready: ["out_for_delivery", "cancelled"],
   out_for_delivery: ["completed", "ready"],
   completed: [],
   cancelled: [],
@@ -114,7 +114,7 @@ export async function saveQuote(id: string, input: z.input<typeof quoteSchema>):
   const { error } = await supabase
     .from("drug_requests")
     .update({
-      delivery_fee: req.fulfilment === "delivery" ? q.delivery_fee : 0,
+      delivery_fee: q.delivery_fee,
       pharmacist_note: q.pharmacist_note || null,
       reviewed_by: staff.id,
       ...(q.send ? { status: "quoted" as const } : req.status === "submitted" ? { status: "reviewing" as const } : {}),

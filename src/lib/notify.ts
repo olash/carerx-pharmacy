@@ -109,7 +109,7 @@ export function reminderContent(item: {
     <tr><td style="padding-top:24px;font-size:16px">Hi ${esc(name)},</td></tr>
     <tr><td style="padding-top:12px;font-size:16px;line-height:24px;color:#475467">${lead}</td></tr>
     <tr><td style="padding-top:24px"><a href="${link}" style="display:inline-block;background:#1f5c3e;color:#fff;text-decoration:none;font-weight:600;padding:12px 20px;border-radius:8px">${item.audience === "patient" ? "Open your chat" : "Open consultation"}</a></td></tr>
-    <tr><td style="padding-top:24px;font-size:13px;color:#667085">${esc(site.address)} · ${esc(site.phone)}</td></tr>
+    <tr><td style="padding-top:24px;font-size:13px;color:#667085">${esc(site.pcnNotice)} · ${esc(site.phone)}</td></tr>
   </table></td></tr></table></body></html>`;
   const text = `Hi ${name},\n\n${lead.replace(/<[^>]+>/g, "")}\n\nOpen: ${link}\n\n${site.name}`;
   // Template body: "Hi {{1}}, reminder of your consultation with {{2}} on {{3}}. Join here: {{4}}"

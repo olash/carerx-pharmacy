@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
+import { IlloEmptyBag } from "@/components/illustrations";
 import { useEffect, useState } from "react";
-import { Minus, Plus, Trash01, XClose, ShoppingBag03, File06, SearchLg } from "@untitledui/icons";
+import { Minus, Plus, Trash01, XClose, File06, SearchLg } from "@untitledui/icons";
 import { useRequestList } from "@/components/providers/request-list";
 import { Button, buttonClasses } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -106,7 +107,7 @@ export function RequestDrawer() {
         <div className="flex-1 overflow-y-auto px-4 py-4 sm:px-6">
           {items.length === 0 ? (
             <EmptyState
-              icon={ShoppingBag03}
+              illustration={<IlloEmptyBag />}
               title="Your list is empty"
               description="Browse our medicines or type in anything you need — we’ll check if we can get it."
               actions={
@@ -174,7 +175,7 @@ export function RequestDrawer() {
             <Link href="/request" onClick={() => setOpen(false)} className={buttonClasses("primary", "xl", "mt-4 w-full")}>
               Continue to request
             </Link>
-            <p className="mt-3 text-center text-xs text-gray-500">No payment now — pay on pickup or delivery.</p>
+            <p className="mt-3 text-center text-xs text-gray-500">No payment now — you pay when it’s delivered.</p>
           </div>
         )}
       </aside>

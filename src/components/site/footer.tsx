@@ -47,12 +47,15 @@ export function SiteFooter() {
             </div>
           ))}
           <div>
-            <h3 className="text-[13px] font-semibold uppercase tracking-[0.14em] text-gray-500">Visit or call</h3>
+            <h3 className="text-[13px] font-semibold uppercase tracking-[0.14em] text-gray-500">Talk to us</h3>
             <address className="mt-5 flex flex-col gap-3 text-[15px] not-italic">
-              <span className="text-gray-300">{site.address}</span>
-              <span className="text-gray-400">{site.storeHours}</span>
+              <span className="text-gray-400">{site.hours}</span>
+              <span className="text-gray-400">{site.serviceArea}</span>
               <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="font-medium text-white hover:underline hover:underline-offset-4">
                 {site.phone}
+              </a>
+              <a href={`https://wa.me/${site.whatsapp.replace(/\D/g, "")}`} className="text-gray-300 hover:text-white">
+                WhatsApp us
               </a>
               <a href={`mailto:${site.email}`} className="text-gray-300 hover:text-white">
                 {site.email}
@@ -62,7 +65,8 @@ export function SiteFooter() {
         </div>
         <div className="flex flex-col gap-3 py-8 text-[13px] leading-relaxed text-gray-500 lg:flex-row lg:justify-between">
           <p>
-            © <Year /> {site.name}. {site.pcnNotice} {site.premisesLicence}. Superintendent: {site.superintendent.name}.
+            © <Year /> {site.name}, an online pharmacy. {site.pcnNotice} {site.premisesLicence}, {site.registeredAddress}. Superintendent
+            pharmacist: {site.superintendent.name} ({site.superintendent.registration}). We don’t serve walk-in customers.
           </p>
           <p>Information on this site doesn’t replace advice from your doctor. In an emergency, call 112.</p>
         </div>

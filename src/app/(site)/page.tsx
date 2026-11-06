@@ -5,6 +5,7 @@ import { ArrowRight, ArrowUpRight, SearchLg } from "@untitledui/icons";
 import { ButtonLink } from "@/components/ui/button";
 import { DrugCard, DrugCardSkeleton } from "@/components/drug-card";
 import { getCategoriesWithCounts, getFeaturedDrugs } from "@/lib/data/catalogue";
+import { IlloDelivery, IlloPayOnDelivery, IlloRequest, IlloReview } from "@/components/illustrations";
 import { site } from "@/lib/config";
 
 export default function HomePage() {
@@ -65,14 +66,14 @@ function Hero() {
         <div className="min-w-0">
           <p className="flex items-center gap-2 text-[13px] font-semibold uppercase tracking-[0.14em] text-brand-700">
             <span className="h-px w-6 bg-brand-600" aria-hidden />
-            <span className="hidden sm:inline">Community pharmacy ·</span> {site.branch}
+            Online pharmacy<span className="hidden sm:inline"> · {site.serviceArea}</span>
           </p>
           <h1 className="mt-6 font-display text-[34px] font-medium leading-[1.04] text-ink min-[400px]:text-[40px] sm:text-6xl lg:text-[72px]">
-            Your neighbourhood pharmacist, <em className="font-normal text-brand-700">now on your phone.</em>
+            A licensed pharmacy <em className="font-normal text-brand-700">that comes to you.</em>
           </h1>
           <p className="mt-6 max-w-xl text-lg leading-relaxed text-gray-700">
-            Send a prescription or a list of what you need. A licensed pharmacist checks it, confirms the price, and we
-            bring it to your door — you only pay when it arrives.
+            Send a prescription or a list of what you need. A pharmacist checks it, confirms the price and sends it to your
+            door — you only pay when it arrives. No queues, no shop visit.
           </p>
 
           <form
@@ -112,7 +113,7 @@ function Hero() {
 
           <dl className="mt-12 grid max-w-xl grid-cols-3 divide-x divide-gray-300 border-t border-gray-300 pt-6">
             {[
-              ["PCN", "licensed premises"],
+              ["PCN", "licensed pharmacy"],
               ["30 min", "typical reply"],
               ["₦0", "to pay upfront"],
             ].map(([k, v]) => (
@@ -127,12 +128,12 @@ function Hero() {
         <figure className="relative pb-6">
           <div className="relative aspect-[4/5] overflow-hidden rounded-[28px] bg-gray-200 sm:aspect-[5/4] lg:aspect-[4/5]">
             <Image
-              src="/images/hero-lagos-pharmacy.webp"
-              alt="A pharmacist showing a customer a box of medicine in a Lagos pharmacy"
+              src="/images/parcels-smile.webp"
+              alt="A smiling woman holding the parcels that were just delivered to her home"
               fill
               priority
               sizes="(min-width: 1024px) 560px, 100vw"
-              className="object-cover object-[62%_center]"
+              className="object-cover object-[48%_center]"
             />
           </div>
           <figcaption className="absolute bottom-0 left-4 right-4 flex items-center gap-3 rounded-2xl bg-white/95 p-4 shadow-lg ring-1 ring-black/5 backdrop-blur sm:left-auto sm:right-6 sm:max-w-xs">
@@ -141,7 +142,7 @@ function Hero() {
               <span className="relative inline-flex size-2.5 rounded-full bg-success-500" />
             </span>
             <p className="text-sm leading-snug text-gray-700">
-              <span className="font-semibold text-ink">A pharmacist is on duty now.</span> Most requests are checked within
+              <span className="font-semibold text-ink">Pharmacists are online now.</span> Most requests are checked within
               30 minutes.
             </p>
           </figcaption>
@@ -155,8 +156,8 @@ function Services() {
   const items = [
     {
       href: "/request",
-      img: "/images/patient-at-home.webp",
-      alt: "A woman at home ordering on her phone",
+      img: "/images/ordering-at-home.webp",
+      alt: "A woman on her sofa ordering on her phone",
       title: "Send what you need",
       text: "Upload a prescription or type a list. We check every item, suggest safe alternatives and send you a quote.",
       cta: "Start a request",
@@ -164,26 +165,26 @@ function Services() {
     },
     {
       href: "/consult",
-      img: "/images/pharmacist-portrait.webp",
-      alt: "A pharmacist in a white coat",
+      img: "/images/pharmacist-video-consult.webp",
+      alt: "A pharmacist answering a patient on her phone and tablet",
       title: "Talk it through",
-      text: "Book a free, private 20-minute chat about side effects, interactions or what to take for a minor ailment.",
+      text: "Book a free, private 20-minute chat with a pharmacist about side effects, interactions or a minor ailment.",
       cta: "Book a chat",
-      pos: "object-[50%_25%]",
+      pos: "object-[50%_30%]",
     },
     {
       href: "/#how-it-works",
-      img: "/images/care-at-home.webp",
-      alt: "A carer going through medicines with an older man at home",
+      img: "/images/door-delivery.webp",
+      alt: "A courier handing a woman her parcels at her front door",
       title: "Delivered, then paid",
-      text: "Same-day delivery across Lagos, or pick up in store. Pay by cash, transfer or POS when it reaches you.",
+      text: "Same-day delivery across Lagos in sealed, labelled packaging. Pay by cash, transfer or POS when it reaches you.",
       cta: "How delivery works",
       pos: "object-center",
     },
   ];
   return (
     <section className="mx-auto w-full max-w-7xl px-4 pb-20 pt-24 md:px-8 md:pb-28 md:pt-32">
-      <SectionTitle kicker="What we do" title="Everything your local chemist does — without the queue." />
+      <SectionTitle kicker="What we do" title="Everything a good pharmacy does — without leaving home." />
       <div className="mt-12 grid gap-x-6 gap-y-12 md:grid-cols-3">
         {items.map((s) => (
           <Link key={s.title} href={s.href} className="group rounded-2xl outline-none focus-visible:ring-focus">
@@ -210,42 +211,60 @@ function Services() {
 
 function HowItWorks() {
   const steps = [
-    ["Tell us what you need", "Search our shelf, type in anything we don’t list, and attach a photo of your prescription if you have one."],
-    ["A pharmacist checks it", "We confirm what’s in stock, check doses and interactions, and send a quote. Nothing happens until you say yes."],
-    ["Pick up or get it delivered", "Collect from the counter or have it brought to you the same day. Pay when it arrives — cash, transfer or POS."],
+    {
+      title: "Tell us what you need",
+      text: "Search our shelf, type in anything we don’t list, and attach a photo of your prescription if you have one.",
+      Illo: IlloRequest,
+    },
+    {
+      title: "A pharmacist checks it",
+      text: "We confirm what’s in stock, check doses and interactions, and send a quote. Nothing happens until you say yes.",
+      Illo: IlloReview,
+    },
+    {
+      title: "We deliver it to you",
+      text: "A rider brings it to your door in sealed, labelled packaging — usually the same day.",
+      Illo: IlloDelivery,
+    },
+    {
+      title: "Pay when it arrives",
+      text: "Cash, transfer or POS on delivery. No card details online, ever.",
+      Illo: IlloPayOnDelivery,
+    },
   ];
   return (
     <section id="how-it-works" className="scroll-mt-28 bg-ink text-white">
       <div className="mx-auto max-w-7xl px-4 py-20 md:px-8 md:py-28">
-        <div className="grid gap-12 lg:grid-cols-[0.9fr_1.1fr] lg:gap-20">
-          <div>
+        <div className="flex flex-col gap-8 lg:flex-row lg:items-end lg:justify-between">
+          <div className="max-w-2xl">
             <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-marigold-300">How it works</p>
             <h2 className="mt-3 font-display text-4xl font-medium leading-[1.1] md:text-5xl">
               A real pharmacist reads every request. <em className="font-normal text-gray-400">Not a bot.</em>
             </h2>
-            <p className="mt-6 max-w-md text-lg leading-relaxed text-gray-300">
-              You get the judgement of a professional who knows Nigerian brands, prices and what’s actually available this week —
-              with the convenience of ordering from your phone.
+            <p className="mt-6 max-w-xl text-lg leading-relaxed text-gray-300">
+              The judgement of a professional who knows Nigerian brands, prices and what’s actually available this week — with
+              the convenience of ordering from your phone.
             </p>
-            <Link
-              href="/request"
-              className="mt-10 inline-flex h-12 items-center gap-2 rounded-full bg-white px-6 text-base font-semibold text-ink outline-none transition hover:bg-paper focus-visible:ring-focus"
-            >
-              Start a request <ArrowRight className="size-5" />
-            </Link>
           </div>
-          <ol className="flex flex-col">
-            {steps.map(([title, text], i) => (
-              <li key={title} className="grid grid-cols-[56px_1fr] gap-4 border-t border-white/15 py-8 last:border-b sm:grid-cols-[80px_1fr]">
-                <span className="font-display text-4xl font-light text-marigold-300 sm:text-5xl">0{i + 1}</span>
-                <div>
-                  <h3 className="text-xl font-semibold">{title}</h3>
-                  <p className="mt-2 max-w-lg text-base leading-relaxed text-gray-300">{text}</p>
-                </div>
-              </li>
-            ))}
-          </ol>
+          <Link
+            href="/request"
+            className="inline-flex h-12 shrink-0 items-center gap-2 self-start rounded-full bg-white px-6 text-base font-semibold text-ink outline-none transition hover:bg-paper focus-visible:ring-focus lg:self-auto"
+          >
+            Start a request <ArrowRight className="size-5" />
+          </Link>
         </div>
+        <ol className="mt-14 grid gap-x-8 gap-y-12 sm:grid-cols-2 lg:grid-cols-4">
+          {steps.map(({ title, text, Illo }, i) => (
+            <li key={title} className="flex flex-col border-t border-white/15 pt-8">
+              <div className="w-36">
+                <Illo tone="dark" />
+              </div>
+              <span className="mt-6 font-display text-2xl font-light text-marigold-300">0{i + 1}</span>
+              <h3 className="mt-1 text-lg font-semibold">{title}</h3>
+              <p className="mt-2 text-[15px] leading-relaxed text-gray-300">{text}</p>
+            </li>
+          ))}
+        </ol>
       </div>
     </section>
   );
@@ -315,7 +334,7 @@ function Pharmacist() {
           />
         </div>
         <div>
-          <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-brand-700">The people behind the counter</p>
+          <p className="text-[13px] font-semibold uppercase tracking-[0.14em] text-brand-700">The pharmacists on the other end</p>
           <blockquote className="mt-6 font-display text-3xl font-normal leading-[1.25] text-ink md:text-[40px]">“{p.quote}”</blockquote>
           <div className="mt-8 flex items-center gap-4">
             <span className="h-px w-10 bg-gray-400" aria-hidden />
@@ -331,7 +350,7 @@ function Pharmacist() {
               ["Genuine stock only", "Every product is NAFDAC-registered and bought from licensed distributors."],
               ["Prescriptions checked", "Prescription-only medicines are dispensed against a valid prescription — always."],
               ["Private by default", "Only our pharmacists see your requests, prescriptions and chats."],
-              ["Here when you need us", `${site.storeHours}. In an emergency, call 112.`],
+              ["Here when you need us", `${site.hours}. In an emergency, call 112.`],
             ].map(([t, d]) => (
               <li key={t}>
                 <p className="font-semibold text-ink">{t}</p>
@@ -347,7 +366,8 @@ function Pharmacist() {
 
 function Faq() {
   const faqs = [
-    ["Do I need to pay online?", "No. Once a pharmacist confirms your quote, you pay on pickup or on delivery — cash, transfer or POS."],
+    ["Do I need to pay online?", "No. Once a pharmacist confirms your quote, you pay when your order is delivered — cash, transfer or POS."],
+    ["Where do you deliver, and can I collect?", "We deliver across Lagos, usually the same day for orders confirmed before 3pm. We’re online-only, so there’s no shop to collect from."],
     ["What if a medicine isn’t on your site?", "Type it into your list anyway. We’ll source it, or recommend a safe equivalent and explain the difference."],
     [
       "Which medicines need a prescription?",

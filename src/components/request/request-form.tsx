@@ -3,7 +3,8 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
-import { Building07, File06, SearchLg, ShoppingBag03, Trash01, Truck01 } from "@untitledui/icons";
+import { File06, SearchLg, Trash01, Truck01 } from "@untitledui/icons";
+import { IlloEmptyBag } from "@/components/illustrations";
 import { useRequestList } from "@/components/providers/request-list";
 import { useToast } from "@/components/providers/toast";
 import { AddCustomItem, QtyStepper } from "@/components/site/request-drawer";
@@ -17,7 +18,7 @@ import { EmptyState } from "@/components/ui/empty-state";
 import { FileDropzone, fileExtension } from "@/components/ui/file-upload";
 import { createClient } from "@/lib/supabase/client";
 import { submitDrugRequest } from "@/actions/requests";
-import { cn, formatNaira } from "@/lib/utils";
+import { formatNaira } from "@/lib/utils";
 import { site } from "@/lib/config";
 
 export function RequestForm({
@@ -32,7 +33,6 @@ export function RequestForm({
   const router = useRouter();
   const toast = useToast();
   const { items, hydrated, setQty, remove, clear, needsPrescription, estimatedTotal } = useRequestList();
-  const [fulfilment, setFulfilment] = useState<"pickup" | "delivery">("pickup");
   const [address, setAddress] = useState("");
   const [phone, setPhone] = useState(defaultPhone);
   const [note, setNote] = useState("");
@@ -50,7 +50,7 @@ export function RequestForm({
     return (
       <Card>
         <EmptyState
-          icon={ShoppingBag03}
+          illustration={<IlloEmptyBag />}
           title="Your request list is empty"
           description="Browse the catalogue, or add any medicine by name below — our pharmacists will source it."
           actions={
@@ -68,14 +68,14 @@ export function RequestForm({
     );
   }
 
-  const total = estimatedTotal + (fulfilment === "delivery" ? deliveryFee : 0);
+  const total = estimatedTotal + deliveryFee;
   const hasUnpriced = items.some((i) => i.price === null);
 
   const submit = () => {
     setError(null);
     const fe: Record<string, string> = {};
     if (phone.replace(/\D/g, "").length < 7) fe.phone = "Enter a phone number we can reach you on";
-    if (fulfilment === "delivery" && address.trim().length < 8) fe.address = "Enter your full delivery address";
+    if (address.trim().length < 8) fe.address = "Enter your full delivery address";
     if (needsPrescription && !file) fe.prescription = "Upload your prescription for the Rx items";
     setFieldErrors(fe);
     if (Object.keys(fe).length) {
@@ -102,7 +102,7 @@ export function RequestForm({
       }
       setStage("submitting");
       const res = await submitDrugRequest({
-        fulfilment,
+        fulfilment: "delivery",
         deliveryAddress: address,
         contactPhone: phone,
         note,
@@ -189,65 +189,29 @@ export function RequestForm({
           </div>
         </Card>
 
-        {/* Fulfilment */}
+        {/* Delivery */}
         <Card className="p-4 sm:p-6">
-          <h2 className="text-lg font-semibold text-gray-900">How would you like to receive it?</h2>
-          <fieldset className="mt-4 grid gap-3 sm:grid-cols-2">
-            <legend className="sr-only">Fulfilment method</legend>
-            {(
-              [
-                { v: "pickup", icon: Building07, title: "Pick up in store", text: site.address, price: "Free" },
-                { v: "delivery", icon: Truck01, title: "Home delivery", text: "Same-day in Lagos for orders confirmed before 3pm", price: formatNaira(deliveryFee) },
-              ] as const
-            ).map((o) => (
-              <label
-                key={o.v}
-                className={cn(
-                  "relative flex cursor-pointer gap-3 rounded-xl p-4 ring-1 ring-inset transition",
-                  fulfilment === o.v ? "bg-brand-25 ring-2 ring-brand-600" : "ring-gray-200 hover:bg-gray-25",
-                )}
-              >
-                <input
-                  type="radio"
-                  name="fulfilment"
-                  value={o.v}
-                  checked={fulfilment === o.v}
-                  onChange={() => setFulfilment(o.v)}
-                  className="sr-only"
-                />
-                <span className={cn("flex size-8 shrink-0 items-center justify-center rounded-full", fulfilment === o.v ? "bg-brand-100 text-brand-600" : "bg-gray-100 text-gray-500")}>
-                  <o.icon className="size-4" />
-                </span>
-                <span className="flex flex-1 flex-col">
-                  <span className="flex items-center justify-between gap-2 text-sm font-semibold text-gray-900">
-                    {o.title} <span className="font-medium text-gray-600">{o.price}</span>
-                  </span>
-                  <span className="mt-0.5 text-sm text-gray-600">{o.text}</span>
-                </span>
-                <span
-                  className={cn(
-                    "mt-0.5 size-4 shrink-0 rounded-full ring-1 ring-inset",
-                    fulfilment === o.v ? "bg-brand-600 ring-brand-600 [box-shadow:inset_0_0_0_4px_white]" : "ring-gray-300",
-                  )}
-                  aria-hidden
-                />
-              </label>
-            ))}
-          </fieldset>
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <h2 className="text-lg font-semibold text-gray-900">Where should we deliver?</h2>
+              <p className="mt-1 text-sm text-gray-600">
+                {site.serviceArea}. Same-day for orders confirmed before 3pm · delivery {formatNaira(deliveryFee)}.
+              </p>
+            </div>
+            <Truck01 className="size-6 shrink-0 text-gray-400" />
+          </div>
 
           <div className="mt-6 grid gap-5">
-            {fulfilment === "delivery" && (
-              <Textarea
-                label="Delivery address"
-                name="address"
-                required
-                rows={3}
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                placeholder="House number, street, area, nearest bus stop / landmark"
-                error={fieldErrors.address}
-              />
-            )}
+            <Textarea
+              label="Delivery address"
+              name="address"
+              required
+              rows={3}
+              value={address}
+              onChange={(e) => setAddress(e.target.value)}
+              placeholder="House number, street, area, nearest bus stop / landmark"
+              error={fieldErrors.address}
+            />
             <Input
               label="Phone number"
               name="phone"
@@ -288,8 +252,8 @@ export function RequestForm({
               </div>
             )}
             <div className="flex justify-between">
-              <dt className="text-gray-600">{fulfilment === "delivery" ? "Delivery" : "Pickup"}</dt>
-              <dd className="font-medium text-gray-900">{fulfilment === "delivery" ? formatNaira(deliveryFee) : "Free"}</dd>
+              <dt className="text-gray-600">Delivery</dt>
+              <dd className="font-medium text-gray-900">{formatNaira(deliveryFee)}</dd>
             </div>
             <div className="flex justify-between border-t border-gray-200 pt-3 text-base">
               <dt className="font-semibold text-gray-900">Estimated total</dt>
@@ -302,7 +266,7 @@ export function RequestForm({
           </Button>
           <div className="mt-4 flex flex-col gap-2 text-xs text-gray-500">
             <p>No payment now. A pharmacist reviews your request and sends a final quote for you to confirm.</p>
-            <p>Pay with cash, transfer or POS on pickup or delivery.</p>
+            <p>Pay with cash, transfer or POS when your order is delivered.</p>
           </div>
         </Card>
         <Label className="sr-only">Request summary</Label>

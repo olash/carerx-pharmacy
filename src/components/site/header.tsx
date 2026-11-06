@@ -60,10 +60,10 @@ export function SiteHeader() {
         <div className="mx-auto flex h-9 max-w-7xl items-center justify-between gap-6 px-4 text-[13px] text-gray-600 md:px-8">
           <p className="flex items-center gap-2 truncate">
             <span className="size-1.5 shrink-0 rounded-full bg-success-500" aria-hidden />
-            Pharmacist on duty · {site.openingShort}
+            Pharmacists online · {site.hoursShort}
           </p>
           <p className="hidden shrink-0 items-center gap-5 lg:flex">
-            <span>{site.address}</span>
+            <span>{site.serviceArea} · pay on delivery</span>
             <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="font-medium text-gray-900 underline-offset-4 hover:underline">
               {site.phone}
             </a>

@@ -126,9 +126,9 @@ export function RequestReview({
 
   const totals = useMemo(() => {
     const subtotal = items.filter((i) => i.is_available).reduce((s, i) => s + (Number(i.unit_price) || 0) * i.quantity, 0);
-    const delivery = request.fulfilment === "delivery" ? Number(deliveryFee) || 0 : 0;
+    const delivery = Number(deliveryFee) || 0;
     return { subtotal, delivery, total: subtotal + delivery };
-  }, [items, deliveryFee, request.fulfilment]);
+  }, [items, deliveryFee]);
 
   const update = (id: string, patch: Partial<EditItem>) => setItems((xs) => xs.map((x) => (x.id === id ? { ...x, ...patch } : x)));
 
@@ -304,7 +304,7 @@ export function RequestReview({
         />
         <dl className="flex flex-col gap-2 text-sm">
           <div className="flex justify-between"><dt className="text-gray-600">Subtotal</dt><dd className="font-medium text-gray-900">{formatNaira(totals.subtotal)}</dd></div>
-          {request.fulfilment === "delivery" && (
+          {(
             <div className="flex items-center justify-between gap-3">
               <dt className="text-gray-600">Delivery fee</dt>
               <dd>
@@ -359,14 +359,11 @@ export function RequestReview({
           )}
           {request.status === "confirmed" && (
             <Button iconLeading={Package} onClick={() => move("ready")} loading={pending}>
-              {request.fulfilment === "delivery" ? "Packed & ready to dispatch" : "Ready for pickup"}
+              Packed, ready for a rider
             </Button>
           )}
-          {request.status === "ready" && request.fulfilment === "delivery" && (
-            <Button iconLeading={Truck01} onClick={() => move("out_for_delivery")} loading={pending}>Out for delivery</Button>
-          )}
-          {request.status === "ready" && request.fulfilment === "pickup" && (
-            <Button iconLeading={CheckCircle} onClick={() => move("completed")} loading={pending}>Collected & paid</Button>
+          {request.status === "ready" && (
+            <Button iconLeading={Truck01} onClick={() => move("out_for_delivery")} loading={pending}>Handed to rider</Button>
           )}
           {request.status === "out_for_delivery" && (
             <>

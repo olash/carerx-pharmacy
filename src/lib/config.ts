@@ -1,20 +1,22 @@
 /**
  * Brand + business details. Rename the pharmacy here and it updates everywhere.
+ * CareRx is an online-only, delivery-only pharmacy — there is no walk-in shop.
  * Items marked PLACEHOLDER should be replaced with the pharmacy's real details.
  */
 export const site = {
   name: "CareRx Pharmacy",
   shortName: "CareRx",
-  tagline: "Your neighbourhood pharmacist, now on your phone.",
+  tagline: "A licensed pharmacy that comes to you.",
   description:
-    "Send a prescription or a list of what you need. A licensed pharmacist checks it, confirms the price and gets it to you — you pay when it arrives.",
-  branch: "Lekki Phase 1, Lagos", // PLACEHOLDER
+    "Send a prescription or a list of what you need. A licensed pharmacist checks it, confirms the price and sends it to your door — you pay when it arrives.",
+  serviceArea: "Delivering across Lagos", // PLACEHOLDER
+  hours: "Pharmacists online daily, 8am–9pm", // PLACEHOLDER
+  hoursShort: "8am–9pm daily", // PLACEHOLDER
   phone: "+234 800 000 0000", // PLACEHOLDER
   whatsapp: "+234 800 000 0000", // PLACEHOLDER
   email: "hello@carerx.ng", // PLACEHOLDER
-  address: "12 Admiralty Way, Lekki Phase 1, Lagos", // PLACEHOLDER
-  storeHours: "Mon–Sat 8am–9pm · Sun 12pm–6pm", // PLACEHOLDER
-  openingShort: "Open daily · 8am–9pm", // PLACEHOLDER
+  // Registered (licensed) premises — shown for legitimacy only, not as a place to visit.
+  registeredAddress: "12 Admiralty Way, Lekki Phase 1, Lagos", // PLACEHOLDER
   pcnNotice: "Licensed by the Pharmacy Council of Nigeria (PCN).",
   premisesLicence: "PCN premises licence no. 000000", // PLACEHOLDER
   superintendent: {

@@ -47,7 +47,7 @@ async function RequestsTable({ searchParams }: { searchParams: PageProps<"/admin
   let query = supabase
     .from("drug_requests")
     .select(
-      "id, ref, status, fulfilment, created_at, updated_at, prescription_path, patient:profiles!drug_requests_patient_id_fkey!inner(full_name, phone, email), drug_request_items(count)",
+      "id, ref, status, delivery_address, created_at, updated_at, prescription_path, patient:profiles!drug_requests_patient_id_fkey!inner(full_name, phone, email), drug_request_items(count)",
     )
     .order("created_at", { ascending: tab === "review" })
     .limit(100);
@@ -90,7 +90,7 @@ async function RequestsTable({ searchParams }: { searchParams: PageProps<"/admin
             <tr>
               <Th>Request</Th>
               <Th>Patient</Th>
-              <Th>Fulfilment</Th>
+              <Th>Deliver to</Th>
               <Th>Status</Th>
               <Th>Received</Th>
             </tr>
@@ -118,7 +118,7 @@ async function RequestsTable({ searchParams }: { searchParams: PageProps<"/admin
                       </div>
                     </div>
                   </Td>
-                  <Td className="capitalize">{r.fulfilment}</Td>
+                  <Td className="max-w-[220px] truncate">{r.delivery_address ?? "—"}</Td>
                   <Td><RequestStatusBadge status={r.status} /></Td>
                   <Td className="whitespace-nowrap">{formatDateTime(r.created_at)}</Td>
                 </Tr>

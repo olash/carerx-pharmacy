@@ -114,7 +114,7 @@ async function RecentRequests() {
                   <Td>
                     <Link href={`/admin/requests/${r.id}`} className="font-medium text-gray-900 hover:underline">{r.ref}</Link>
                     <p className="text-gray-500">
-                      {count} items · {r.fulfilment}
+                      {count} items
                       {r.prescription_path ? " · Rx attached" : ""}
                     </p>
                   </Td>

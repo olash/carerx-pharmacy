@@ -7,7 +7,7 @@ import { friendlyError } from "@/lib/errors";
 import type { ActionResult } from "@/lib/types";
 
 const schema = z.object({
-  fulfilment: z.enum(["pickup", "delivery"]),
+  fulfilment: z.literal("delivery").default("delivery"),
   deliveryAddress: z.string().max(500).optional().default(""),
   contactPhone: z.string().trim().min(7, "Enter a phone number we can reach you on").max(32),
   note: z.string().max(2000).optional().default(""),
@@ -28,7 +28,7 @@ export async function submitDrugRequest(input: z.input<typeof schema>): Promise<
   const parsed = schema.safeParse(input);
   if (!parsed.success) return { ok: false, error: parsed.error.issues[0]?.message ?? "Invalid request" };
   const d = parsed.data;
-  if (d.fulfilment === "delivery" && d.deliveryAddress.trim().length < 8) {
+  if (d.deliveryAddress.trim().length < 8) {
     return { ok: false, error: "Enter your full delivery address.", fieldErrors: { deliveryAddress: "Enter your full delivery address" } };
   }
 
