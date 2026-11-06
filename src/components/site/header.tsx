@@ -1,7 +1,8 @@
 import Link from "next/link";
 import { Suspense } from "react";
 import { getProfile, getSessionUser, isStaffRole } from "@/lib/auth";
-import { ButtonLink } from "@/components/ui/button";
+import { ButtonLink, buttonClasses } from "@/components/ui/button";
+import { signOut } from "@/actions/auth";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Logo } from "./logo";
 import { AccountMenu } from "./account-menu";
@@ -14,6 +15,27 @@ export const navLinks = [
   { href: "/consult", label: "Talk to a pharmacist" },
   { href: "/#how-it-works", label: "How it works" },
 ];
+
+async function MobileNavAuth() {
+  const user = await getSessionUser();
+  if (!user) {
+    return (
+      <>
+        <Link href="/signup" className={buttonClasses("primary", "lg")}>Sign up</Link>
+        <Link href="/login" className={buttonClasses("secondary", "lg")}>Log in</Link>
+      </>
+    );
+  }
+  return (
+    <>
+      <p className="truncate text-sm text-gray-600">Signed in as <span className="font-medium text-gray-900">{user.email}</span></p>
+      <Link href="/account" className={buttonClasses("primary", "lg")}>My account</Link>
+      <form action={signOut}>
+        <button type="submit" className={buttonClasses("secondary", "lg", "w-full")}>Log out</button>
+      </form>
+    </>
+  );
+}
 
 async function HeaderAccount() {
   const [user, profile] = await Promise.all([getSessionUser(), getProfile()]);
@@ -33,16 +55,16 @@ async function HeaderAccount() {
 export function SiteHeader() {
   return (
     <header className="sticky top-0 z-40 border-b border-gray-200 bg-white/90 backdrop-blur supports-[backdrop-filter]:bg-white/80">
-      <div className="hidden bg-brand-700 text-brand-50 sm:block">
-        <div className="mx-auto flex h-9 max-w-7xl items-center justify-between px-4 text-xs font-medium md:px-8">
-          <span>{site.pcnNotice} Pay on pickup or delivery.</span>
-          <span className="opacity-90">
+      <div className="hidden bg-brand-700 text-brand-50 md:block">
+        <div className="mx-auto flex h-9 max-w-7xl items-center justify-between gap-6 px-4 text-xs font-medium md:px-8">
+          <span className="truncate">{site.pcnNotice} Pay on pickup or delivery.</span>
+          <span className="hidden shrink-0 opacity-90 lg:inline">
             {site.storeHours} · <a href={`tel:${site.phone.replace(/\s/g, "")}`} className="underline-offset-2 hover:underline">{site.phone}</a>
           </span>
         </div>
       </div>
       <div className="mx-auto flex h-16 max-w-7xl items-center gap-4 px-4 md:h-[72px] md:px-8">
-        <MobileNav links={navLinks} />
+        <MobileNav links={navLinks} auth={<Suspense fallback={null}><MobileNavAuth /></Suspense>} />
         <Logo />
         <nav className="ml-6 hidden items-center gap-1 lg:flex" aria-label="Main">
           {navLinks.map((l) => (

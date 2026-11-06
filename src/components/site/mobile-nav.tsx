@@ -1,13 +1,26 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { Menu01, XClose } from "@untitledui/icons";
-import { buttonClasses } from "@/components/ui/button";
 import { Logo } from "./logo";
 
-export function MobileNav({ links }: { links: { href: string; label: string }[] }) {
+export function MobileNav({ links, auth }: { links: { href: string; label: string }[]; auth?: React.ReactNode }) {
   const [open, setOpen] = useState(false);
+
+  // Lock page scroll and close on Escape while the menu is open.
+  useEffect(() => {
+    if (!open) return;
+    const onKey = (e: KeyboardEvent) => e.key === "Escape" && setOpen(false);
+    document.addEventListener("keydown", onKey);
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.body.style.overflow = prev;
+    };
+  }, [open]);
 
   return (
     <>
@@ -19,10 +32,11 @@ export function MobileNav({ links }: { links: { href: string; label: string }[] 
       >
         <Menu01 className="size-6" />
       </button>
-      {open && (
+      {/* Portal to <body>: the header's backdrop-blur would otherwise trap this fixed overlay inside the header. */}
+      {open && createPortal(
         <div className="fixed inset-0 z-50 lg:hidden" role="dialog" aria-modal="true" aria-label="Menu">
           <div className="absolute inset-0 animate-fade-in bg-gray-950/50 backdrop-blur-sm" onClick={() => setOpen(false)} />
-          <div className="absolute inset-y-0 left-0 flex w-[min(320px,85vw)] flex-col bg-white shadow-xl">
+          <div className="absolute inset-y-0 left-0 flex w-[min(320px,85vw)] animate-slide-in-left flex-col overflow-y-auto bg-white shadow-xl">
             <div className="flex h-16 items-center justify-between border-b border-gray-200 px-4">
               <Logo />
               <button type="button" onClick={() => setOpen(false)} className="rounded-lg p-2 text-gray-500 hover:bg-gray-50" aria-label="Close menu">
@@ -35,20 +49,17 @@ export function MobileNav({ links }: { links: { href: string; label: string }[] 
                   {l.label}
                 </Link>
               ))}
-              <Link href="/account" className="rounded-md px-3 py-2.5 text-base font-semibold text-gray-700 hover:bg-gray-50">
-                My account
-              </Link>
             </nav>
-            <div className="mt-auto flex flex-col gap-3 border-t border-gray-200 p-4" onClick={(e) => (e.target as HTMLElement).closest("a") && setOpen(false)}>
-              <Link href="/signup" className={buttonClasses("primary", "lg")}>
-                Sign up
-              </Link>
-              <Link href="/login" className={buttonClasses("secondary", "lg")}>
-                Log in
-              </Link>
+            <div
+              className="mt-auto flex flex-col gap-3 border-t border-gray-200 p-4"
+              onClick={(e) => (e.target as HTMLElement).closest("a") && setOpen(false)}
+              onSubmit={() => setTimeout(() => setOpen(false), 0)}
+            >
+              {auth}
             </div>
           </div>
-        </div>
+        </div>,
+        document.body,
       )}
     </>
   );

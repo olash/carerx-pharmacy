@@ -131,29 +131,34 @@ export function RequestForm({
           </div>
           <ul className="divide-y divide-gray-200">
             {items.map((item) => (
-              <li key={item.key} className="flex flex-wrap items-center gap-4 px-4 py-4 sm:px-6">
+              <li key={item.key} className="flex gap-3 px-4 py-4 sm:gap-4 sm:px-6">
                 <DrugThumb name={item.name} form={item.form} className="size-12 shrink-0 rounded-lg" size="sm" />
                 <div className="min-w-0 flex-1">
-                  <p className="text-sm font-semibold text-gray-900">{item.name}</p>
-                  <p className="mt-0.5 flex flex-wrap items-center gap-1.5 text-sm text-gray-600">
-                    {item.requiresRx && <RxBadge />}
-                    {item.detail}
-                    {item.price !== null && <span>· {formatNaira(item.price)} each</span>}
-                  </p>
-                </div>
-                <div className="flex items-center gap-3">
-                  <QtyStepper value={item.qty} onChange={(n) => setQty(item.key, n)} label={item.name} />
-                  <p className="w-24 text-right text-sm font-semibold text-gray-900">
-                    {item.price === null ? <span className="font-medium text-gray-500">Quote</span> : formatNaira(item.price * item.qty)}
-                  </p>
-                  <button
-                    type="button"
-                    onClick={() => remove(item.key)}
-                    className="rounded-md p-2 text-gray-400 hover:bg-gray-50 hover:text-error-600"
-                    aria-label={`Remove ${item.name}`}
-                  >
-                    <Trash01 className="size-5" />
-                  </button>
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="min-w-0">
+                      <p className="text-sm font-semibold text-gray-900">{item.name}</p>
+                      <p className="mt-0.5 flex flex-wrap items-center gap-x-1.5 gap-y-1 text-sm text-gray-600">
+                        {item.requiresRx && <RxBadge />}
+                        {item.detail && <span>{item.detail}</span>}
+                        {item.price !== null && <span>· {formatNaira(item.price)} each</span>}
+                      </p>
+                    </div>
+                    <p className="shrink-0 text-right text-sm font-semibold text-gray-900">
+                      {item.price === null ? <span className="font-medium text-gray-500">To be quoted</span> : formatNaira(item.price * item.qty)}
+                    </p>
+                  </div>
+                  <div className="mt-3 flex items-center justify-between gap-3">
+                    <QtyStepper value={item.qty} onChange={(n) => setQty(item.key, n)} label={item.name} />
+                    <button
+                      type="button"
+                      onClick={() => remove(item.key)}
+                      className="inline-flex items-center gap-1 rounded-md p-1.5 text-sm font-semibold text-gray-500 hover:bg-gray-50 hover:text-error-700"
+                      aria-label={`Remove ${item.name}`}
+                    >
+                      <Trash01 className="size-4" />
+                      <span className="hidden sm:inline">Remove</span>
+                    </button>
+                  </div>
                 </div>
               </li>
             ))}

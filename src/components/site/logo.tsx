@@ -16,9 +16,9 @@ export function Logo({ href = "/", suffix, className }: { href?: string; suffix?
   return (
     <Link href={href} className={cn("inline-flex items-center gap-2.5 rounded-md outline-none focus-visible:ring-focus", className)}>
       <LogoMark />
-      <span className="text-lg font-semibold tracking-tight text-gray-900">
+      <span className="whitespace-nowrap text-lg font-semibold tracking-tight text-gray-900">
         {site.shortName}
-        <span className="font-normal text-gray-500"> {suffix ?? "Pharmacy"}</span>
+        <span className="hidden font-normal text-gray-500 min-[400px]:inline"> {suffix ?? "Pharmacy"}</span>
       </span>
     </Link>
   );

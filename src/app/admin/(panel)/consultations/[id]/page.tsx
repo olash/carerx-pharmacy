@@ -51,9 +51,9 @@ async function Consult({ params }: { params: Promise<{ id: string }> }) {
 
   return (
     <ConsultPresenceProvider consultationId={c.id} enabled={features.presence} userId={staff.id} track="staff">
-    <div className="-mx-4 -my-8 grid h-[calc(100dvh-64px)] md:-mx-8 lg:h-dvh xl:grid-cols-[1fr_340px]">
+    <div className="-mx-4 -my-8 grid h-[calc(100dvh-64px)] grid-cols-1 md:-mx-8 lg:h-dvh xl:grid-cols-[minmax(0,1fr)_340px]">
       <LiveRefresh channel={`admin-consult:${id}`} table="consultations" filter={`id=eq.${id}`} events="UPDATE" />
-      <section className="flex min-h-0 flex-col bg-white">
+      <section className="flex min-h-0 min-w-0 flex-col bg-white">
         <header className="flex flex-wrap items-center justify-between gap-3 border-b border-gray-200 px-4 py-4 md:px-6">
           <div className="flex min-w-0 items-center gap-3">
             <Link href="/admin/consultations" className="rounded-lg p-2 text-gray-500 hover:bg-gray-50" aria-label="Back">
