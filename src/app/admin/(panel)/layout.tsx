@@ -1,18 +1,38 @@
 import { Suspense } from "react";
 import { requireStaff } from "@/lib/auth";
-import { getDashboardStats } from "@/lib/data/admin";
+import { getDashboardStats, getFeatureSettings, getUnreadCounts } from "@/lib/data/admin";
+import { getStaffNames } from "@/lib/data/consultations";
 import { AdminSidebar, AdminSidebarFallback } from "@/components/admin/admin-sidebar";
+import { AdminAlerts } from "@/components/admin/admin-alerts";
 
 async function SidebarWithData() {
   const profile = await requireStaff();
-  const stats = await getDashboardStats().catch(() => null);
+  const [stats, features, unread, staffNames] = await Promise.all([
+    getDashboardStats().catch(() => null),
+    getFeatureSettings(),
+    getUnreadCounts().catch(() => ({})),
+    getStaffNames(),
+  ]);
+  const unreadTotal = Object.values(unread).reduce((a, b) => a + b, 0);
   return (
-    <AdminSidebar
-      name={profile.full_name}
-      email={profile.email}
-      role={profile.role}
-      counts={stats ? { needsReview: stats.needs_review, consultsToday: stats.consults_today, lowStock: stats.low_stock + stats.out_of_stock } : undefined}
-    />
+    <>
+      <AdminAlerts userId={profile.id} staffIds={Object.keys(staffNames)} soundEnabled={features.alertSound} />
+      <AdminSidebar
+        name={profile.full_name}
+        email={profile.email}
+        role={profile.role}
+        counts={
+          stats
+            ? {
+                needsReview: stats.needs_review,
+                consultsToday: stats.consults_today,
+                unread: features.unreadBadges ? unreadTotal : 0,
+                lowStock: stats.low_stock + stats.out_of_stock,
+              }
+            : undefined
+        }
+      />
+    </>
   );
 }
 

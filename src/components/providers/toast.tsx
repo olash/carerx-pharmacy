@@ -1,10 +1,11 @@
 "use client";
 
+import Link from "next/link";
 import { createContext, useCallback, useContext, useState, type ReactNode } from "react";
-import { AlertCircle, CheckCircle, XClose } from "@untitledui/icons";
+import { AlertCircle, CheckCircle, MessageChatCircle, XClose } from "@untitledui/icons";
 import { cn } from "@/lib/utils";
 
-type Toast = { id: number; title: string; description?: string; tone: "success" | "error" };
+type Toast = { id: number; title: string; description?: string; tone: "success" | "error" | "info"; href?: string; actionLabel?: string };
 type Ctx = { toast: (t: Omit<Toast, "id">) => void };
 
 const ToastContext = createContext<Ctx | null>(null);
@@ -18,7 +19,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
     (t) => {
       const id = Date.now() + Math.random();
       setToasts((prev) => [...prev.slice(-2), { ...t, id }]);
-      setTimeout(() => dismiss(id), 4500);
+      setTimeout(() => dismiss(id), t.href ? 8000 : 4500);
     },
     [dismiss],
   );
@@ -31,16 +32,21 @@ export function ToastProvider({ children }: { children: ReactNode }) {
         className="pointer-events-none fixed inset-x-4 bottom-4 z-[60] flex flex-col items-center gap-3 sm:inset-x-auto sm:right-6 sm:bottom-6 sm:items-end"
       >
         {toasts.map((t) => {
-          const Icon = t.tone === "success" ? CheckCircle : AlertCircle;
+          const Icon = t.tone === "error" ? AlertCircle : t.tone === "info" ? MessageChatCircle : CheckCircle;
           return (
             <div
               key={t.id}
               className="pointer-events-auto flex w-full max-w-sm animate-fade-in items-start gap-3 rounded-xl bg-white p-4 shadow-lg ring-1 ring-gray-200"
             >
-              <Icon className={cn("mt-0.5 size-5 shrink-0", t.tone === "success" ? "text-success-600" : "text-error-600")} />
+              <Icon className={cn("mt-0.5 size-5 shrink-0", t.tone === "success" ? "text-success-600" : t.tone === "info" ? "text-brand-600" : "text-error-600")} />
               <div className="min-w-0 flex-1">
                 <p className="text-sm font-semibold text-gray-900">{t.title}</p>
                 {t.description && <p className="mt-1 text-sm text-gray-600">{t.description}</p>}
+                {t.href && (
+                  <Link href={t.href} onClick={() => dismiss(t.id)} className="mt-2 inline-block text-sm font-semibold text-brand-700 hover:text-brand-800">
+                    {t.actionLabel ?? "View"}
+                  </Link>
+                )}
               </div>
               <button
                 type="button"

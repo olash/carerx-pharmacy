@@ -15,19 +15,20 @@ import {
   Users01,
   XClose,
   LinkExternal01,
+  Link03,
 } from "@untitledui/icons";
 import { Logo } from "@/components/site/logo";
 import { Avatar } from "@/components/ui/avatar";
 import { signOut } from "@/actions/auth";
 import { cn } from "@/lib/utils";
 
-type NavItem = { href: string; label: string; icon: FC<{ className?: string }>; badge?: number; adminOnly?: boolean; exact?: boolean };
+type NavItem = { href: string; label: string; icon: FC<{ className?: string }>; badge?: number; badgeTone?: "brand"; badgeLabel?: string; adminOnly?: boolean; exact?: boolean };
 
 export type SidebarProps = {
   name: string | null;
   email: string | null;
   role: "pharmacist" | "admin" | "patient";
-  counts?: { needsReview: number; consultsToday: number; lowStock: number };
+  counts?: { needsReview: number; consultsToday: number; unread: number; lowStock: number };
 };
 
 function navItems(counts: SidebarProps["counts"]): { title?: string; items: NavItem[] }[] {
@@ -36,7 +37,9 @@ function navItems(counts: SidebarProps["counts"]): { title?: string; items: NavI
       items: [
         { href: "/admin", label: "Dashboard", icon: BarChart01, exact: true },
         { href: "/admin/requests", label: "Drug requests", icon: File06, badge: counts?.needsReview },
-        { href: "/admin/consultations", label: "Consultations", icon: CalendarCheck01, badge: counts?.consultsToday },
+        counts?.unread
+          ? { href: "/admin/consultations", label: "Consultations", icon: CalendarCheck01, badge: counts.unread, badgeTone: "brand", badgeLabel: `${counts.unread} unread messages` }
+          : { href: "/admin/consultations", label: "Consultations", icon: CalendarCheck01, badge: counts?.consultsToday, badgeLabel: "consultations today" },
       ],
     },
     {
@@ -50,6 +53,7 @@ function navItems(counts: SidebarProps["counts"]): { title?: string; items: NavI
       title: "Pharmacy",
       items: [
         { href: "/admin/settings", label: "Settings & hours", icon: Settings01 },
+        { href: "/admin/integrations", label: "Integrations", icon: Link03, adminOnly: true },
         { href: "/admin/team", label: "Team", icon: Users01, adminOnly: true },
       ],
     },
@@ -86,7 +90,13 @@ function SidebarContent({ name, email, role, counts, onNavigate }: SidebarProps 
                         <item.icon className={cn("size-5", active ? "text-gray-500" : "text-gray-400")} />
                         <span className="flex-1">{item.label}</span>
                         {!!item.badge && (
-                          <span className="rounded-full bg-gray-50 px-2 py-0.5 text-xs font-medium text-gray-700 ring-1 ring-inset ring-gray-200">
+                          <span
+                            aria-label={item.badgeLabel}
+                            className={cn(
+                              "rounded-full px-2 py-0.5 text-xs font-medium ring-1 ring-inset",
+                              item.badgeTone === "brand" ? "bg-brand-600 text-white ring-brand-600" : "bg-gray-50 text-gray-700 ring-gray-200",
+                            )}
+                          >
                             {item.badge}
                           </span>
                         )}

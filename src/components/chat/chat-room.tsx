@@ -5,6 +5,7 @@ import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { Attachment01, File06, Send01, XClose, Lock01 } from "@untitledui/icons";
 import { createClient } from "@/lib/supabase/client";
 import { subscribeAuthed } from "@/lib/supabase/realtime";
+import { markConsultRead } from "@/actions/admin/consultations";
 import type { ConsultationMessage } from "@/lib/types";
 import { Avatar } from "@/components/ui/avatar";
 import { fileExtension, formatBytes } from "@/components/ui/file-upload";
@@ -53,11 +54,17 @@ export function ChatRoom({
           (payload) => {
             const m = payload.new as ConsultationMessage;
             setMessages((prev) => (prev.some((p) => p.id === m.id) ? prev : [...prev, m].sort((a, b) => a.created_at.localeCompare(b.created_at))));
+            if (viewer === "staff" && m.sender_id === patientId) void markConsultRead(consultationId);
           },
         ),
       ),
-    [consultationId],
+    [consultationId, viewer, patientId],
   );
+
+  // Staff opening the chat marks the patient's messages as read.
+  useEffect(() => {
+    if (viewer === "staff") void markConsultRead(consultationId);
+  }, [viewer, consultationId]);
 
   // Fallback: merge messages from a server refresh (e.g. after a status change).
   useEffect(() => {

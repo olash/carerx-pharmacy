@@ -13,6 +13,9 @@ import { Table, THead, Th, Td, Tr } from "@/components/ui/table";
 import { Avatar } from "@/components/ui/avatar";
 import { ConsultStatusBadge } from "@/components/status";
 import { LiveRefresh } from "@/components/live-refresh";
+import { ConsultOnlineDot } from "@/components/chat/presence";
+import { Badge } from "@/components/ui/badge";
+import { getFeatureSettings, getUnreadCounts } from "@/lib/data/admin";
 import { formatDate, formatTime } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Consultations" };
@@ -47,7 +50,7 @@ async function List({ searchParams }: { searchParams: PageProps<"/admin/consulta
     tab === "upcoming"
       ? q.or(`status.eq.in_progress,and(status.eq.booked,scheduled_at.gte.${cutoff})`).order("scheduled_at")
       : q.or(`status.in.(completed,cancelled,no_show),and(status.eq.booked,scheduled_at.lt.${cutoff})`).order("scheduled_at", { ascending: false });
-  const { data } = await q;
+  const [{ data }, features, unread] = await Promise.all([q, getFeatureSettings(), getUnreadCounts()]);
 
   return (
     <Card className="overflow-hidden">
@@ -91,8 +94,18 @@ async function List({ searchParams }: { searchParams: PageProps<"/admin/consulta
                   </div>
                 </Td>
                 <Td className="max-w-xs truncate">{c.topic}</Td>
-                <Td>{(c.consultation_messages as unknown as { count: number }[])[0]?.count ?? 0}</Td>
-                <Td><ConsultStatusBadge status={c.status} /></Td>
+                <Td>
+                  <span className="flex items-center gap-2">
+                    {(c.consultation_messages as unknown as { count: number }[])[0]?.count ?? 0}
+                    {features.unreadBadges && !!unread[c.id] && <Badge color="brand" className="relative z-10">{unread[c.id]} unread</Badge>}
+                  </span>
+                </Td>
+                <Td>
+                  <div className="flex flex-col items-start gap-1">
+                    <ConsultStatusBadge status={c.status} />
+                    {features.presence && (c.status === "booked" || c.status === "in_progress") && <ConsultOnlineDot consultationId={c.id} />}
+                  </div>
+                </Td>
               </Tr>
             ))}
           </tbody>

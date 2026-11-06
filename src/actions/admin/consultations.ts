@@ -38,3 +38,13 @@ export async function saveConsultNotes(id: string, notes: string): Promise<Actio
   if (error) return { ok: false, error: error.message };
   return { ok: true, message: "Notes saved." };
 }
+
+export async function markConsultRead(id: string): Promise<ActionResult> {
+  const staff = await requireStaff();
+  const supabase = await createClient();
+  const { error } = await supabase
+    .from("consultation_staff_reads")
+    .upsert({ consultation_id: id, last_read_at: new Date().toISOString(), read_by: staff.id });
+  if (error) return { ok: false, error: error.message };
+  return { ok: true };
+}

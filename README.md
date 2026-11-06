@@ -33,8 +33,22 @@ An online pharmacy for Nigeria. Patients send **drug requests** (with prescripti
 | `/admin/requests/[id]` | Review the prescription, mark availability, set prices, substitute or add items, send a quote, then Ready → Out for delivery → Delivered |
 | `/admin/consultations` | Upcoming and past consultations |
 | `/admin/consultations/[id]` | Chat with the patient, private notes, start/end/no-show |
-| `/admin/settings` | Weekly consultation hours, slot length, booking window, delivery fee |
+| `/admin/settings` | Weekly consultation hours, slot length, booking window, delivery fee, and **live chat switches** (online status, unread badges, alert sound) |
+| `/admin/integrations` | (Admin only) The owner connects **their own** email (Resend) and WhatsApp (Meta Cloud API) accounts and configures consultation reminders |
 | `/admin/team` | (Admin only) grant or revoke pharmacist/admin access |
+
+### Live chat
+- Each consultation has a private realtime chat room (text + photos/PDFs). Patients can write any time before the slot.
+- **Pharmacist joins** from Admin → Consultations → open the booking → *Start session* (or just reply). The consultation becomes "In session" and is assigned to that pharmacist.
+- **Online status** (toggle): a green dot shows when the patient is in the chat room (Supabase Presence on a private, RLS-protected channel); patients see "Pharmacist online".
+- **Unread badges + alert sound** (toggles): staff get a live toast and chime for new patient messages, bookings and drug requests, with unread counts in the sidebar and consultations list. Opening a chat marks it read.
+
+### Reminders (Admin → Integrations)
+- Credentials are stored encrypted in **Supabase Vault**, never in plain tables, and never sent back to the browser.
+- Supabase **pg_cron** calls `POST /api/reminders/run` every 5 minutes via **pg_net**, authenticated with a random secret kept in Vault.
+- Choose when (24h / 2h / 1h / 15 min before) and who (patients and/or the pharmacy team, by email and/or WhatsApp). Each reminder is sent once, and only the most imminent one if several are due. Every send is logged.
+- WhatsApp needs an approved **Utility** template (default name `consultation_reminder`):
+  `Hi {{1}}, this is a reminder of your consultation with {{2}} on {{3}}. Join here: {{4}}`
 
 ### Request lifecycle
 `submitted → reviewing → quoted → confirmed → ready → (out_for_delivery) → completed`, plus `cancelled` (by the patient) and `rejected` (by the pharmacist, with a reason). Patients **pay on pickup or delivery**; no payment gateway is needed. Stock is **deducted automatically** when a request is completed.

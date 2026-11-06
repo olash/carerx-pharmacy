@@ -103,6 +103,52 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
+                },"consultation_reminders": {
+                  Row: {
+                    "audience": string,"channel": string,"consultation_id": string,"created_at": string,"error": string | null,"id": number,"offset_min": number,"recipient": string,"status": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "audience": string,"channel": string,"consultation_id": string,"created_at"?: string,"error"?: string | null,"id"?: never,"offset_min": number,"recipient": string,"status": string
+                  }
+                  Update: {
+                    "audience"?: string,"channel"?: string,"consultation_id"?: string,"created_at"?: string,"error"?: string | null,"id"?: never,"offset_min"?: number,"recipient"?: string,"status"?: string
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "consultation_reminders_consultation_id_fkey"
+      columns: ["consultation_id"]
+isOneToOne: false
+      referencedRelation: "consultations"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"consultation_staff_reads": {
+                  Row: {
+                    "consultation_id": string,"last_read_at": string,"read_by": string | null
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "consultation_id": string,"last_read_at"?: string,"read_by"?: string | null
+                  }
+                  Update: {
+                    "consultation_id"?: string,"last_read_at"?: string,"read_by"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "consultation_staff_reads_consultation_id_fkey"
+      columns: ["consultation_id"]
+isOneToOne: true
+      referencedRelation: "consultations"
+      referencedColumns: ["id"]
+    },{
+      foreignKeyName: "consultation_staff_reads_read_by_fkey"
+      columns: ["read_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
                 },"consultations": {
                   Row: {
                     "created_at": string,"details": string | null,"duration_min": number,"id": string,"patient_id": string,"pharmacist_id": string | null,"ref": string,"scheduled_at": string,"status": Database["public"]['Enums']["consult_status"],"topic": string,"updated_at": string
@@ -207,16 +253,36 @@ isOneToOne: false
       referencedColumns: ["id"]
     }
                   ]
-                },"pharmacy_settings": {
+                },"integration_settings": {
                   Row: {
-                    "booking_window_days": number,"delivery_fee": number,"id": number,"slot_minutes": number,"timezone": string,"updated_at": string
+                    "email_from_address": string | null,"email_from_name": string | null,"id": number,"last_run_at": string | null,"notify_patient_email": boolean,"notify_patient_whatsapp": boolean,"notify_staff_email": boolean,"notify_staff_whatsapp": boolean,"reminder_offsets_min": (number)[],"reminders_enabled": boolean,"site_url": string | null,"staff_notify_email": string | null,"staff_notify_whatsapp": string | null,"updated_at": string,"updated_by": string | null,"whatsapp_phone_number_id": string | null,"whatsapp_template_lang": string | null,"whatsapp_template_name": string | null
                   }
                   ComputedFields: never
                   Insert: {
-                    "booking_window_days"?: number,"delivery_fee"?: number,"id"?: number,"slot_minutes"?: number,"timezone"?: string,"updated_at"?: string
+                    "email_from_address"?: string | null,"email_from_name"?: string | null,"id"?: number,"last_run_at"?: string | null,"notify_patient_email"?: boolean,"notify_patient_whatsapp"?: boolean,"notify_staff_email"?: boolean,"notify_staff_whatsapp"?: boolean,"reminder_offsets_min"?: (number)[],"reminders_enabled"?: boolean,"site_url"?: string | null,"staff_notify_email"?: string | null,"staff_notify_whatsapp"?: string | null,"updated_at"?: string,"updated_by"?: string | null,"whatsapp_phone_number_id"?: string | null,"whatsapp_template_lang"?: string | null,"whatsapp_template_name"?: string | null
                   }
                   Update: {
-                    "booking_window_days"?: number,"delivery_fee"?: number,"id"?: number,"slot_minutes"?: number,"timezone"?: string,"updated_at"?: string
+                    "email_from_address"?: string | null,"email_from_name"?: string | null,"id"?: number,"last_run_at"?: string | null,"notify_patient_email"?: boolean,"notify_patient_whatsapp"?: boolean,"notify_staff_email"?: boolean,"notify_staff_whatsapp"?: boolean,"reminder_offsets_min"?: (number)[],"reminders_enabled"?: boolean,"site_url"?: string | null,"staff_notify_email"?: string | null,"staff_notify_whatsapp"?: string | null,"updated_at"?: string,"updated_by"?: string | null,"whatsapp_phone_number_id"?: string | null,"whatsapp_template_lang"?: string | null,"whatsapp_template_name"?: string | null
+                  }
+                  Relationships: [
+                    {
+      foreignKeyName: "integration_settings_updated_by_fkey"
+      columns: ["updated_by"]
+isOneToOne: false
+      referencedRelation: "profiles"
+      referencedColumns: ["id"]
+    }
+                  ]
+                },"pharmacy_settings": {
+                  Row: {
+                    "alert_sound_enabled": boolean,"booking_window_days": number,"delivery_fee": number,"id": number,"presence_enabled": boolean,"slot_minutes": number,"timezone": string,"unread_badges_enabled": boolean,"updated_at": string
+                  }
+                  ComputedFields: never
+                  Insert: {
+                    "alert_sound_enabled"?: boolean,"booking_window_days"?: number,"delivery_fee"?: number,"id"?: number,"presence_enabled"?: boolean,"slot_minutes"?: number,"timezone"?: string,"unread_badges_enabled"?: boolean,"updated_at"?: string
+                  }
+                  Update: {
+                    "alert_sound_enabled"?: boolean,"booking_window_days"?: number,"delivery_fee"?: number,"id"?: number,"presence_enabled"?: boolean,"slot_minutes"?: number,"timezone"?: string,"unread_badges_enabled"?: boolean,"updated_at"?: string
                   }
                   Relationships: [
                     
@@ -281,14 +347,43 @@ isOneToOne: false
                 }
           }
           Functions: {
-            "admin_dashboard_stats":
+            "_get_secret":
+{ Args: { "p_key": string }; Returns: string
+                           },
+"_integration_secret_name":
+{ Args: { "p_key": string }; Returns: string
+                           },
+"admin_dashboard_stats":
 { Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"admin_get_integration_secrets":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"admin_integration_status":
+{ Args: Record<PropertyKey, never>; Returns: Json
+                           },
+"admin_set_integration_secret":
+{ Args: { "p_key": string,"p_value": string }; Returns: undefined
+                           },
+"admin_set_reminder_schedule":
+{ Args: { "p_enabled": boolean }; Returns: undefined
+                           },
+"admin_trigger_reminders":
+{ Args: Record<PropertyKey, never>; Returns: number
+                           },
+"admin_unread_counts":
+{ Args: Record<PropertyKey, never>; Returns: {
+              "consultation_id": string,"unread": number
+            }[]
                            },
 "book_consultation":
 { Args: { "p_details": string,"p_scheduled_at": string,"p_topic": string }; Returns: string
                            },
 "can_access_consultation":
 { Args: { "p_id": string }; Returns: boolean
+                           },
+"consult_topic_allowed":
+{ Args: { "p_topic": string }; Returns: boolean
                            },
 "get_booked_slots":
 { Args: { "p_from": string,"p_to": string }; Returns: string[]
@@ -304,6 +399,15 @@ isOneToOne: false
                            },
 "patient_request_action":
 { Args: { "p_action": string,"p_request_id": string }; Returns: Database["public"]['Enums']["request_status"]
+                           },
+"reminders_due":
+{ Args: { "p_secret": string }; Returns: Json
+                           },
+"reminders_record":
+{ Args: { "p_results": Json,"p_secret": string }; Returns: number
+                           },
+"run_reminders_http":
+{ Args: Record<PropertyKey, never>; Returns: number
                            },
 "staff_directory":
 { Args: Record<PropertyKey, never>; Returns: {

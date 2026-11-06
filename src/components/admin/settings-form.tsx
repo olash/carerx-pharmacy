@@ -3,6 +3,7 @@
 import { useState, useTransition } from "react";
 import { useRouter } from "next/navigation";
 import { saveSettings } from "@/actions/admin/settings";
+import { playChime } from "@/lib/chime";
 import { useToast } from "@/components/providers/toast";
 import { Button } from "@/components/ui/button";
 import { Input, Select, Toggle } from "@/components/ui/input";
@@ -17,6 +18,9 @@ export function SettingsForm({ settings, hours }: { settings: PharmacySettings; 
   const [slot, setSlot] = useState(String(settings.slot_minutes));
   const [windowDays, setWindowDays] = useState(String(settings.booking_window_days));
   const [fee, setFee] = useState(String(Number(settings.delivery_fee)));
+  const [presence, setPresence] = useState(settings.presence_enabled);
+  const [badges, setBadges] = useState(settings.unread_badges_enabled);
+  const [sound, setSound] = useState(settings.alert_sound_enabled);
   const [h, setH] = useState(() =>
     hours.map((x) => ({ ...x, start_time: x.start_time.slice(0, 5), end_time: x.end_time.slice(0, 5) })),
   );
@@ -33,7 +37,15 @@ export function SettingsForm({ settings, hours }: { settings: PharmacySettings; 
         e.preventDefault();
         setError(null);
         start(async () => {
-          const res = await saveSettings({ slot_minutes: Number(slot), booking_window_days: Number(windowDays), delivery_fee: Number(fee), hours: h });
+          const res = await saveSettings({
+            slot_minutes: Number(slot),
+            booking_window_days: Number(windowDays),
+            delivery_fee: Number(fee),
+            presence_enabled: presence,
+            unread_badges_enabled: badges,
+            alert_sound_enabled: sound,
+            hours: h,
+          });
           if (!res.ok) return setError(res.error);
           toast({ tone: "success", title: "Settings saved" });
           router.refresh();
@@ -67,6 +79,43 @@ export function SettingsForm({ settings, hours }: { settings: PharmacySettings; 
             );
           })}
         </ul>
+      </Card>
+
+      <Card>
+        <div className="border-b border-gray-200 px-4 py-5 sm:px-6">
+          <h2 className="text-lg font-semibold text-gray-900">Live chat</h2>
+          <p className="mt-1 text-sm text-gray-600">How consultations behave for patients and the pharmacy team.</p>
+        </div>
+        <div className="flex flex-col divide-y divide-gray-200">
+          <div className="px-4 py-4 sm:px-6">
+            <Toggle
+              name="presence_enabled"
+              checked={presence}
+              onChange={(e) => setPresence(e.target.checked)}
+              label="Online status"
+              hint="Show a green dot when the patient is in the chat room, and tell patients when a pharmacist is online."
+            />
+          </div>
+          <div className="px-4 py-4 sm:px-6">
+            <Toggle
+              name="unread_badges_enabled"
+              checked={badges}
+              onChange={(e) => setBadges(e.target.checked)}
+              label="Unread message badges"
+              hint="Count unread patient messages in the sidebar and on the consultations list."
+            />
+          </div>
+          <div className="flex flex-wrap items-start justify-between gap-3 px-4 py-4 sm:px-6">
+            <Toggle
+              name="alert_sound_enabled"
+              checked={sound}
+              onChange={(e) => setSound(e.target.checked)}
+              label="Alert sound"
+              hint="Play a chime in the admin when a patient messages, books a consultation or sends a request."
+            />
+            <Button variant="secondary" size="sm" onClick={() => playChime()}>Preview sound</Button>
+          </div>
+        </div>
       </Card>
 
       <Card className="p-4 sm:p-6">

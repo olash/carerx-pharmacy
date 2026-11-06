@@ -11,6 +11,9 @@ const settingsSchema = z.object({
   slot_minutes: z.coerce.number().int().min(10).max(120),
   booking_window_days: z.coerce.number().int().min(1).max(60),
   delivery_fee: z.coerce.number().min(0).max(1_000_000),
+  presence_enabled: z.boolean(),
+  unread_badges_enabled: z.boolean(),
+  alert_sound_enabled: z.boolean(),
   hours: z
     .array(z.object({ weekday: z.number().int().min(0).max(6), is_open: z.boolean(), start_time: time, end_time: time }))
     .length(7),
@@ -34,8 +37,9 @@ export async function saveSettings(input: z.input<typeof settingsSchema>): Promi
       .eq("weekday", h.weekday);
     if (e) return { ok: false, error: e.message };
   }
-  revalidatePath("/admin/settings");
+  revalidatePath("/admin", "layout");
   revalidatePath("/consult");
+  revalidatePath("/account", "layout");
   return { ok: true, message: "Settings saved." };
 }
 

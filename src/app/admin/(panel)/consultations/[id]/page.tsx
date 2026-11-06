@@ -6,6 +6,8 @@ import { ArrowLeft, Mail01, Phone } from "@untitledui/icons";
 import { requireStaff } from "@/lib/auth";
 import { createClient } from "@/lib/supabase/server";
 import { getStaffNames } from "@/lib/data/consultations";
+import { getFeatureSettings } from "@/lib/data/admin";
+import { ConsultPresenceProvider, PresenceAvatarDot, PresencePill } from "@/components/chat/presence";
 import { ChatRoom } from "@/components/chat/chat-room";
 import { ConsultStatusBadge, RequestStatusBadge } from "@/components/status";
 import { ConsultNotes, ConsultStatusActions } from "@/components/admin/consult-controls";
@@ -37,16 +39,18 @@ async function Consult({ params }: { params: Promise<{ id: string }> }) {
     .maybeSingle();
   if (!c) notFound();
 
-  const [{ data: messages }, { data: notes }, { data: requests }, staffNames] = await Promise.all([
+  const [{ data: messages }, { data: notes }, { data: requests }, staffNames, features] = await Promise.all([
     supabase.from("consultation_messages").select("*").eq("consultation_id", id).order("created_at").limit(500),
     supabase.from("consultation_notes").select("notes").eq("consultation_id", id).maybeSingle(),
     supabase.from("drug_requests").select("id, ref, status, created_at").eq("patient_id", c.patient_id).order("created_at", { ascending: false }).limit(5),
     getStaffNames(),
+    getFeatureSettings(),
   ]);
 
   const canSend = c.status === "booked" || c.status === "in_progress";
 
   return (
+    <ConsultPresenceProvider consultationId={c.id} enabled={features.presence} userId={staff.id} track="staff">
     <div className="-mx-4 -my-8 grid h-[calc(100dvh-64px)] md:-mx-8 lg:h-dvh xl:grid-cols-[1fr_340px]">
       <LiveRefresh channel={`admin-consult:${id}`} table="consultations" filter={`id=eq.${id}`} events="UPDATE" />
       <section className="flex min-h-0 flex-col bg-white">
@@ -55,10 +59,13 @@ async function Consult({ params }: { params: Promise<{ id: string }> }) {
             <Link href="/admin/consultations" className="rounded-lg p-2 text-gray-500 hover:bg-gray-50" aria-label="Back">
               <ArrowLeft className="size-5" />
             </Link>
-            <Avatar name={c.patient?.full_name} size="md" />
+            <span className="relative">
+              <Avatar name={c.patient?.full_name} size="md" />
+              <PresenceAvatarDot who="patient" />
+            </span>
             <div className="min-w-0">
               <p className="flex flex-wrap items-center gap-2 font-semibold text-gray-900">
-                {c.patient?.full_name} <ConsultStatusBadge status={c.status} />
+                {c.patient?.full_name} <ConsultStatusBadge status={c.status} /> <PresencePill who="patient" />
               </p>
               <p className="truncate text-sm text-gray-600">
                 {formatDate(c.scheduled_at, { weekday: "short" })} · {formatTime(c.scheduled_at)} · {c.ref}
@@ -115,5 +122,6 @@ async function Consult({ params }: { params: Promise<{ id: string }> }) {
         </Card>
       </aside>
     </div>
+    </ConsultPresenceProvider>
   );
 }
